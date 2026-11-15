@@ -1,0 +1,540 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: 'class', theme: { extend: { colors: { 'on-tertiary-fixed': '#2a1700', 'on-primary-fixed-variant': '#2f2ebe', 'secondary-fixed-dim': '#4edea3', 'background': '#0f131c', 'primary-fixed-dim': '#c0c1ff', 'on-tertiary-fixed-variant': '#653e00', 'on-secondary-container': '#00311f', 'inverse-primary': '#494bd6', 'error-container': '#93000a', 'on-error': '#690005', 'secondary': '#4edea3', 'outline-variant': '#464554', 'primary': '#c0c1ff', 'on-error-container': '#ffdad6', 'tertiary-container': '#ca8100', 'primary-container': '#8083ff', 'on-tertiary': '#472a00', 'surface-variant': '#31353f', 'surface-dim': '#0f131c', 'on-primary-fixed': '#07006c', 'secondary-container': '#00a572', 'inverse-surface': '#dfe2ef', 'tertiary': '#ffb95f', 'surface-tint': '#c0c1ff', 'inverse-on-surface': '#2c303a', 'surface-container': '#1c1f29', 'outline': '#908fa0', 'error': '#ffb4ab', 'on-background': '#dfe2ef', 'on-secondary-fixed-variant': '#005236', 'tertiary-fixed': '#ffddb8', 'on-surface-variant': '#c7c4d7', 'on-primary-container': '#0d0096', 'surface-container-low': '#181b25', 'surface': '#0f131c', 'on-tertiary-container': '#3e2400', 'surface-container-lowest': '#0a0e17', 'surface-container-high': '#262a34', 'surface-container-highest': '#31353f', 'surface-bright': '#353943', 'on-secondary-fixed': '#002113', 'on-secondary': '#003824', 'primary-fixed': '#e1e0ff', 'on-surface': '#dfe2ef', 'secondary-fixed': '#6ffbbe', 'on-primary': '#1000a9', 'tertiary-fixed-dim': '#ffb95f' }, borderRadius: { DEFAULT: '0.125rem', lg: '0.25rem', xl: '0.5rem', full: '0.75rem' }, spacing: { 'gutter-desktop': '1.5rem', 'gutter': '1rem', 'space-xs': '0.25rem', 'margin': '1rem', 'space-xl': '2rem', 'space-md': '0.75rem', 'space-lg': '1.25rem', 'margin-desktop': '2rem', 'space-sm': '0.5rem' }, fontFamily: { 'display-mobile': ['Inter'], 'code-sm': ['JetBrains Mono'], 'headline-lg': ['Inter'], 'label-sm': ['JetBrains Mono'], 'display': ['Inter'], 'label-md': ['JetBrains Mono'], 'body-lg': ['Inter'], 'body-md': ['Inter'], 'headline-md': ['Inter'], 'body-sm': ['Inter'], 'headline-lg-mobile': ['Inter'], 'code-md': ['JetBrains Mono'], 'headline-sm': ['Inter'] }, fontSize: { 'display-mobile': ['2.25rem', { lineHeight: '2.75rem', letterSpacing: '-0.025em', fontWeight: '600' }], 'code-sm': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.02em', fontWeight: '500' }], 'headline-lg': ['2.25rem', { lineHeight: '2.75rem', letterSpacing: '-0.025em', fontWeight: '600' }], 'label-sm': ['0.625rem', { lineHeight: '0.875rem', letterSpacing: '0.06em', fontWeight: '600' }], 'display': ['3.5rem', { lineHeight: '4rem', letterSpacing: '-0.035em', fontWeight: '600' }], 'label-md': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.04em', fontWeight: '500' }], 'body-lg': ['1rem', { lineHeight: '1.5rem', letterSpacing: '-0.01em', fontWeight: '400' }], 'body-md': ['0.875rem', { lineHeight: '1.375rem', letterSpacing: '-0.005em', fontWeight: '400' }], 'headline-md': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.02em', fontWeight: '600' }], 'body-sm': ['0.75rem', { lineHeight: '1.125rem', letterSpacing: '0em', fontWeight: '400' }], 'headline-lg-mobile': ['1.75rem', { lineHeight: '2.25rem', letterSpacing: '-0.02em', fontWeight: '600' }], 'code-md': ['0.8125rem', { lineHeight: '1.25rem', letterSpacing: '-0.01em', fontWeight: '400' }], 'headline-sm': ['1.125rem', { lineHeight: '1.625rem', letterSpacing: '-0.015em', fontWeight: '500' }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 h-16 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)] flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-md"><img alt="Kestrel Finance Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrDtcesyb2RpOafIEK1q1ADit8zNuU2RqVIh7BNcbUYicwwtE8v4GAWUUD-s_Y0wP7ceWdFKrwOncEiojtokaQjQlwMXkmH62ug9DvSqYamidCZdoUlUSiXtjHnptKYqedx9TkWmMcWqd0YFBGDkikiKWetziRdezFwQT9C-fWoKs0N3shP7IdyinK8K1oHnjWaE1TeTUghEKou_4OQ1zxkaLnMBiTWLBN6Z5xAJUFo"><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Kestrel Finance</span><span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Agentic Loan Ops</span></div></div><div class="hidden lg:flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container-low"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.6)] animate-pulse"></span><span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Agent Mesh Active</span></div><span class="text-outline-variant font-label-sm">|</span><span class="font-label-sm text-label-sm text-on-surface-variant">99.98% SLA</span></div></div><div class="flex-1 max-w-lg mx-space-xl hidden md:block"><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-space-md text-outline pointer-events-none text-lg">search</span><input class="w-full h-9 pl-10 pr-space-lg rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:bg-surface-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search entities, deals, covenants, prompts (Cmd+K)..." type="text"><span class="absolute right-space-sm px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">⌘K</span></div></div><div class="flex items-center gap-space-md"><button class="relative p-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-tertiary ring-2 ring-surface-container-lowest"></span></button><button class="p-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-xl">hub</span></button><div class="h-6 w-px bg-surface-variant mx-space-xs"></div><div class="flex items-center gap-space-md pl-space-xs"><div class="flex flex-col items-end hidden sm:flex"><span class="font-body-sm text-body-sm text-on-surface font-medium">Marcus Vance</span><span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary uppercase font-semibold">Lead Underwriter</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATsGpnNgXky4kU-lb2cP1azY40ZL6PKx36hOcRh4J0a0mFJQBEx1ipL_J5JWkCj-IAo5R-QYbe4BzNTfWWDGRpQeihKoyC99ZfC0mJZ7LCSVYDIc2IWPjr3bfT3K3Vf53yfGO3rFcxwRINq_HD3HmnEfGSFKRp7mxTJ7o9bSHH91vt1i4AgxAH55MO6y0VXimg0-MsSk3MCa-bBsYrZNldRdcGgGId7fP197sKKw"></div></div></header><aside class="fixed left-0 top-16 bottom-0 w-64 z-40 bg-surface-container-lowest/90 backdrop-blur-xl flex flex-col justify-between p-space-md"><div class="flex flex-col gap-space-md"><div class="p-space-sm rounded-xl bg-surface-container-low"><div class="flex items-center justify-between mb-space-xs"><span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Active Persona</span><span class="material-symbols-outlined text-outline text-sm">unfold_more</span></div><div class="flex items-center gap-space-sm"><div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center text-on-primary-container font-code-sm text-code-sm font-bold">AI</div><div class="flex flex-col"><span class="font-body-sm text-body-sm text-on-surface font-medium leading-none">Autonomous Credit</span><span class="font-label-sm text-label-sm text-secondary">Supervised Ops</span></div></div></div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container-high text-primary font-semibold shadow-[inset_2px_0_0_0_#c0c1ff]"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="global-pipeline" href="#"><span class="material-symbols-outlined text-lg">view_kanban</span><span class="font-body-md text-body-md">Global Pipeline</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="intake-and-comms" href="#"><span class="material-symbols-outlined text-lg">forward_to_inbox</span><span class="font-body-md text-body-md">Intake &amp; Comms</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="spreading-studio" href="#"><span class="material-symbols-outlined text-lg">table_chart_view</span><span class="font-body-md text-body-md">Spreading Studio</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="credit-dossier" href="#"><span class="material-symbols-outlined text-lg">fact_check</span><span class="font-body-md text-body-md">Credit Dossier</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="sla-scorecard" href="#"><span class="material-symbols-outlined text-lg">speed</span><span class="font-body-md text-body-md">SLA Scorecard</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="model-and-prompt-config" href="#"><span class="material-symbols-outlined text-lg">tune</span><span class="font-body-md text-body-md">Model &amp; Prompts</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="finops-ledger" href="#"><span class="material-symbols-outlined text-lg">account_balance</span><span class="font-body-md text-body-md">FinOps Ledger</span></a></nav></div><div class="flex flex-col gap-space-xs pt-space-md bg-surface-container-lowest"><div class="p-space-sm rounded-xl bg-surface-container-low/60 flex items-center justify-between"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-secondary text-sm">bolt</span><span class="font-label-sm text-label-sm text-on-surface-variant">Token Burn Rate</span></div><span class="font-code-sm text-code-sm text-on-surface font-semibold">4.2k/hr</span></div><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-lg">settings</span><span class="font-body-md text-body-md">System Settings</span></a></div></aside><div class="pl-64"><main class="w-full min-h-screen pt-16 bg-background px-gutter-desktop py-gutter-desktop"><div class="flex flex-col w-full gap-space-lg">
+<!-- Deal Context & Operational Ribbon -->
+<section class="w-full rounded-full bg-surface-container-low p-space-md shadow-md flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-lg flex-wrap min-w-0">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(192,193,255,0.2)]">
+<span class="material-symbols-outlined text-xl">solar_power</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight truncate">Apex Solar Fab LLP</span>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-surface-container-high text-primary font-code-sm">KF-2024-8812</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Commercial Solar EPC Rooftop Facility</span>
+</div>
+</div>
+<div class="hidden xl:block h-8 w-px bg-surface-variant"></div>
+<div class="flex items-center gap-space-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Facility Amount</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold font-code-md">₹24,50,000</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Assigned RM</span>
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Priya Sharma</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-tertiary-container/20 text-tertiary">
+<span class="material-symbols-outlined text-sm animate-pulse">pending</span>
+<span class="font-label-sm text-label-sm font-semibold uppercase">Pending Client Docs (2 GSTR-3B)</span>
+</div>
+<div class="hidden sm:flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-secondary-container/20 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_6px_rgba(78,222,163,0.8)]"></span>
+<span class="font-label-sm text-label-sm font-semibold uppercase">SLA: 4h 18m Left</span>
+</div>
+</div>
+</section>
+<!-- Dual-Panel Workspace Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg w-full">
+<!-- LEFT PANEL: File Management, Ingestion & Automated Completeness (7 cols) -->
+<section class="lg:col-span-7 flex flex-col gap-space-lg min-w-0">
+<!-- Interactive Ingestion Drag & Drop Zone -->
+<div class="relative rounded-full bg-surface-container-low p-space-xl overflow-hidden group shadow-lg">
+<div class="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-16 -bottom-16 w-48 h-48 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md mb-space-lg">
+<div>
+<div class="flex items-center gap-space-xs mb-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Autonomous Ingestion Engine</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Financial &amp; Legal Document Ingestion</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-space-sm py-1 rounded-full">Format: PDF, XLS, ZIP ≤ 45MB</span>
+</div>
+<!-- Drop target area -->
+<div class="w-full rounded-full bg-surface-container-lowest/80 p-space-xl flex flex-col items-center justify-center text-center transition-all cursor-pointer hover:bg-surface-container-high/40 hover:shadow-[0_0_24px_rgba(192,193,255,0.2)]" id="drop-zone">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-primary mb-space-md group-hover:scale-110 transition-transform shadow-[0_0_24px_rgba(192,193,255,0.15)]">
+<span class="material-symbols-outlined text-3xl">cloud_upload</span>
+</div>
+<h3 class="font-body-lg text-body-lg text-on-surface font-medium mb-1">Drag Bank Statements, GST &amp; Financials here</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-md mb-space-lg">
+            Auto-extracts GSTIN, counterparty debits, DSCR inputs, and flags month gaps instantly via OCR &amp; schema matching.
+          </p>
+<div class="flex flex-wrap items-center justify-center gap-space-sm">
+<button class="px-space-md py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-semibold flex items-center gap-space-xs hover:bg-primary-fixed transition-colors shadow-sm">
+<span class="material-symbols-outlined text-base">upload_file</span>
+              Browse System Files
+            </button>
+<button class="px-space-md py-2 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-space-xs hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-base text-secondary">sync</span>
+              Fetch via Account Aggregator
+            </button>
+</div>
+</div>
+<!-- Real-time Active Processing Banner -->
+<div class="mt-space-md p-space-md rounded-full bg-surface-container-high/60 flex items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-base animate-spin">cyclone</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-sm text-body-sm text-on-surface font-medium truncate">Processing: Apex_Audited_Financials_FY23-24.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Chunk 28 of 34 • Spreading Schedule III P&amp;L</span>
+</div>
+</div>
+<span class="font-code-sm text-code-sm text-primary font-bold shrink-0">82%</span>
+</div>
+</div>
+<!-- Completeness Tracker Widget -->
+<div class="rounded-full bg-surface-container-low p-space-lg shadow-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-xl">fact_check</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Completeness Evaluation Matrix</h3>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high">
+<span class="font-label-sm text-label-sm text-outline">Score:</span>
+<span class="font-code-sm text-code-sm text-secondary font-bold">3 / 4 Passed</span>
+</div>
+</div>
+<!-- Metric Items -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md"><!-- Item 1: Pass -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high transition-all group border border-outline-variant/20 hover:border-secondary/40 shadow-sm">
+  <div class="flex items-center justify-between gap-space-xs cursor-pointer select-none" onclick="const el = this.nextElementSibling.nextElementSibling; el.classList.toggle('hidden');">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <span class="material-symbols-outlined text-secondary text-lg shrink-0">verified</span>
+      <span class="font-body-md text-body-md text-on-surface font-medium truncate">Text-based PDF Verification</span>
+    </div>
+    <div class="flex items-center gap-space-xs shrink-0">
+      <span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm font-bold uppercase">PASS</span>
+      <span class="material-symbols-outlined text-outline-variant text-base group-hover:text-primary transition-transform">unfold_more</span>
+    </div>
+  </div>
+  <div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+    <span>99.8% OCR text fidelity across 142 pages</span>
+    <span class="text-secondary font-code-sm text-code-sm">Vector Ready</span>
+  </div>
+  <!-- Collapsible Raw Audit Details -->
+  <div class="hidden mt-space-xs pt-space-xs border-t border-outline-variant/30 flex flex-col gap-1 font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest/60 p-space-xs rounded">
+    <div class="flex justify-between"><span class="text-outline">Font Embedding:</span><span class="text-secondary">TrueType / Vector Native</span></div>
+    <div class="flex justify-between"><span class="text-outline">Confidence Score:</span><span class="text-on-surface">0.9984 (Bounding Box Validated)</span></div>
+    <div class="flex justify-between"><span class="text-outline">Discrepancies:</span><span>0 unmapped glyphs</span></div>
+  </div>
+</div>
+
+<!-- Item 2: Pass -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high transition-all group border border-outline-variant/20 hover:border-secondary/40 shadow-sm">
+  <div class="flex items-center justify-between gap-space-xs cursor-pointer select-none" onclick="const el = this.nextElementSibling.nextElementSibling; el.classList.toggle('hidden');">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <span class="material-symbols-outlined text-secondary text-lg shrink-0">check_circle</span>
+      <span class="font-body-md text-body-md text-on-surface font-medium truncate">12 Months Continuity Check</span>
+    </div>
+    <div class="flex items-center gap-space-xs shrink-0">
+      <span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm font-bold uppercase">PASS</span>
+      <span class="material-symbols-outlined text-outline-variant text-base group-hover:text-primary transition-transform">unfold_more</span>
+    </div>
+  </div>
+  <div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+    <span>ICICI Bank CA (...8841) Apr 2023 - Mar 2024</span>
+    <span class="text-secondary font-code-sm text-code-sm">0 Gaps</span>
+  </div>
+  <!-- Collapsible Raw Audit Details -->
+  <div class="hidden mt-space-xs pt-space-xs border-t border-outline-variant/30 flex flex-col gap-1 font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest/60 p-space-xs rounded">
+    <div class="flex justify-between"><span class="text-outline">Opening/Closing Sync:</span><span class="text-secondary">100% Hash Matched</span></div>
+    <div class="flex justify-between"><span class="text-outline">Days Covered:</span><span class="text-on-surface">366 days unbroken</span></div>
+    <div class="flex justify-between"><span class="text-outline">Counterparty Debits:</span><span>1,280 Txns Classified</span></div>
+  </div>
+</div>
+
+<!-- Item 3: Fail -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high transition-all group border border-error/30 hover:border-error shadow-sm">
+  <div class="flex items-center justify-between gap-space-xs cursor-pointer select-none" onclick="const el = this.nextElementSibling.nextElementSibling; el.classList.toggle('hidden');">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <span class="material-symbols-outlined text-error text-lg shrink-0">error</span>
+      <span class="font-body-md text-body-md text-on-surface font-medium truncate">GSTR-3B Cross Reconciliation</span>
+    </div>
+    <div class="flex items-center gap-space-xs shrink-0">
+      <span class="px-space-xs py-0.5 rounded bg-error-container/30 text-error font-label-sm text-label-sm font-bold uppercase">FAIL (2 Missing)</span>
+      <span class="material-symbols-outlined text-outline-variant text-base group-hover:text-primary transition-transform">unfold_more</span>
+    </div>
+  </div>
+  <div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+    <span class="text-error font-medium">Nov 2023 &amp; Dec 2023 filings missing</span>
+    <button class="text-primary hover:text-primary-fixed underline decoration-primary font-code-sm text-code-sm" onclick="event.stopPropagation(); highlightAgentEditor()">Trigger Comms →</button>
+  </div>
+  <!-- Collapsible Raw Audit Details -->
+  <div class="hidden mt-space-xs pt-space-xs border-t border-outline-variant/30 flex flex-col gap-1 font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest/60 p-space-xs rounded">
+    <div class="flex justify-between"><span class="text-outline">Expected Filings:</span><span class="text-on-surface">12 Monthly Ret.</span></div>
+    <div class="flex justify-between"><span class="text-outline">Discovered in Docket:</span><span class="text-error">10 of 12</span></div>
+    <div class="flex justify-between"><span class="text-outline">Rule Severity:</span><span class="text-error font-bold">High Risk / Incomplete</span></div>
+  </div>
+</div>
+
+<!-- Item 4: Pass -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high transition-all group border border-outline-variant/20 hover:border-secondary/40 shadow-sm">
+  <div class="flex items-center justify-between gap-space-xs cursor-pointer select-none" onclick="const el = this.nextElementSibling.nextElementSibling; el.classList.toggle('hidden');">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <span class="material-symbols-outlined text-secondary text-lg shrink-0">verified_user</span>
+      <span class="font-body-md text-body-md text-on-surface font-medium truncate">Director KYC &amp; Udyam Aadhar</span>
+    </div>
+    <div class="flex items-center gap-space-xs shrink-0">
+      <span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm font-bold uppercase">PASS</span>
+      <span class="material-symbols-outlined text-outline-variant text-base group-hover:text-primary transition-transform">unfold_more</span>
+    </div>
+  </div>
+  <div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+    <span>DIN 08914421 MCA &amp; UDYAM-MH-02 Verified</span>
+    <span class="text-secondary font-code-sm text-code-sm">Compliant</span>
+  </div>
+  <!-- Collapsible Raw Audit Details -->
+  <div class="hidden mt-space-xs pt-space-xs border-t border-outline-variant/30 flex flex-col gap-1 font-code-sm text-code-sm text-on-surface-variant bg-surface-container-lowest/60 p-space-xs rounded">
+    <div class="flex justify-between"><span class="text-outline">Registry:</span><span class="text-on-surface">Ministry of Corporate Affairs API</span></div>
+    <div class="flex justify-between"><span class="text-outline">MSME Type:</span><span class="text-secondary">Small Enterprise (Renewables)</span></div>
+    <div class="flex justify-between"><span class="text-outline">Signatory Match:</span><span class="text-secondary">100% Biometric/Aadhar</span></div>
+  </div>
+</div></div>
+</div>
+<!-- Recent Uploads Table / Ingestion Log -->
+<div class="rounded-full bg-surface-container-low p-space-lg shadow-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-xl">folder_managed</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Active Ingestion Docket</h3>
+</div>
+<span class="font-code-sm text-code-sm text-on-surface-variant">4 Files Enrolled</span>
+</div>
+<div class="flex flex-col gap-space-xs"><!-- File Chip 1 -->
+<div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high border border-outline-variant/10 hover:border-primary/30 transition-all">
+  <div class="flex items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0">
+        <span class="material-symbols-outlined text-base">picture_as_pdf</span>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-space-xs">
+          <span class="font-body-sm text-body-sm text-on-surface font-medium truncate">Apex_Solar_Bank_Stmts_FY24.pdf</span>
+          <span class="font-label-sm text-label-sm text-outline font-code-sm">(14.2 MB)</span>
+        </div>
+        <span class="font-label-sm text-label-sm text-on-surface-variant truncate">ICICI Primary Current • 1,280 Txns</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-space-sm shrink-0">
+      <span class="px-space-xs py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-xs">check</span>
+        Parsed
+      </span>
+      <button class="px-space-xs py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm flex items-center gap-0.5" onclick="const m = this.parentElement.parentElement.nextElementSibling; m.classList.toggle('hidden');">
+        <span>Meta</span>
+        <span class="material-symbols-outlined text-xs">info</span>
+      </button>
+    </div>
+  </div>
+  <div class="hidden px-space-sm py-1 bg-surface-container-lowest/80 rounded font-code-sm text-code-sm text-on-surface-variant grid grid-cols-2 gap-1 border-t border-outline-variant/20 mt-1">
+    <span>Hash: SHA-256 e8b4...91c</span>
+    <span>Encryption: Standard TLS 1.3</span>
+    <span>OCR Schema: Bank_Format_ICICI_v4</span>
+    <span class="text-secondary">Discrepancy: None</span>
+  </div>
+</div>
+
+<!-- File Chip 2 -->
+<div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high border border-outline-variant/10 hover:border-tertiary/30 transition-all">
+  <div class="flex items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-tertiary shrink-0">
+        <span class="material-symbols-outlined text-base">receipt_long</span>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-space-xs">
+          <span class="font-body-sm text-body-sm text-on-surface font-medium truncate">Apex_Solar_GST_Q3.pdf</span>
+          <span class="font-label-sm text-label-sm text-outline font-code-sm">(3.8 MB)</span>
+        </div>
+        <span class="font-label-sm text-label-sm text-on-surface-variant truncate">GSTR-1 &amp; 3B filings • Q3 FY24</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-space-sm shrink-0">
+      <span class="px-space-xs py-0.5 rounded-full bg-tertiary-container/20 text-tertiary font-label-sm text-label-sm font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-xs">warning</span>
+        Variance
+      </span>
+      <button class="px-space-xs py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm flex items-center gap-0.5" onclick="const m = this.parentElement.parentElement.nextElementSibling; m.classList.toggle('hidden');">
+        <span>Meta</span>
+        <span class="material-symbols-outlined text-xs">info</span>
+      </button>
+    </div>
+  </div>
+  <div class="hidden px-space-sm py-1 bg-surface-container-lowest/80 rounded font-code-sm text-code-sm text-on-surface-variant grid grid-cols-2 gap-1 border-t border-outline-variant/20 mt-1">
+    <span>Hash: SHA-256 c41a...02f</span>
+    <span>Encryption: AES-256 Vault</span>
+    <span>Schema: GST_GSTR_B2B_v2</span>
+    <span class="text-tertiary">Notice: Missing Nov/Dec 3B</span>
+  </div>
+</div>
+
+<!-- File Chip 3 -->
+<div class="p-space-sm rounded-xl bg-surface-container flex flex-col gap-space-xs hover:bg-surface-container-high border border-outline-variant/10 hover:border-secondary/30 transition-all">
+  <div class="flex items-center justify-between gap-space-md">
+    <div class="flex items-center gap-space-sm min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-secondary shrink-0">
+        <span class="material-symbols-outlined text-base">badge</span>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-space-xs">
+          <span class="font-body-sm text-body-sm text-on-surface font-medium truncate">KYC_Directors_Combined_Aadhar_PAN.pdf</span>
+          <span class="font-label-sm text-label-sm text-outline font-code-sm">(2.1 MB)</span>
+        </div>
+        <span class="font-label-sm text-label-sm text-on-surface-variant truncate">2 Designated Partners Verified</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-space-sm shrink-0">
+      <span class="px-space-xs py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-xs">done_all</span>
+        Matched
+      </span>
+      <button class="px-space-xs py-1 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface-variant hover:text-on-surface font-code-sm text-code-sm flex items-center gap-0.5" onclick="const m = this.parentElement.parentElement.nextElementSibling; m.classList.toggle('hidden');">
+        <span>Meta</span>
+        <span class="material-symbols-outlined text-xs">info</span>
+      </button>
+    </div>
+  </div>
+  <div class="hidden px-space-sm py-1 bg-surface-container-lowest/80 rounded font-code-sm text-code-sm text-on-surface-variant grid grid-cols-2 gap-1 border-t border-outline-variant/20 mt-1">
+    <span>Hash: SHA-256 94df...33e</span>
+    <span>ID Cross-check: NSDL &amp; MCA</span>
+    <span>Biometric Auth: OK</span>
+    <span class="text-secondary">Status: Compliant</span>
+  </div>
+</div></div>
+</div>
+</section>
+<!-- RIGHT PANEL: AI Comms Agent & Interactive Multi-Channel Resolution (5 cols) -->
+<section class="lg:col-span-5 flex flex-col gap-space-lg min-w-0">
+<!-- Comms Agent Workstation Card -->
+<div class="rounded-full bg-surface-container-low p-space-lg shadow-xl flex flex-col gap-space-md relative overflow-hidden transition-all duration-300" id="agent-comms-card">
+<!-- Header & Channel Selection -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#c0c1ff]"></div>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Agent Kestrel-Comms</span>
+</div>
+<span class="font-code-sm text-code-sm text-secondary bg-surface-container-high px-space-xs py-0.5 rounded">v2.4 Auto-Prompt</span>
+</div>
+<!-- Channel Selector Toggle -->
+<div class="grid grid-cols-2 gap-space-xs p-1 rounded-full bg-surface-container-lowest">
+<button class="py-1.5 px-space-md rounded-full bg-surface-container-high text-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors" id="channel-email-btn" onclick="selectChannel('email')">
+<span class="material-symbols-outlined text-base">alternate_email</span>
+              Email Dispatch
+            </button>
+<button class="py-1.5 px-space-md rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors" id="channel-wa-btn" onclick="selectChannel('whatsapp')">
+<span class="material-symbols-outlined text-base text-secondary">chat</span>
+              WhatsApp Business
+            </button>
+</div>
+</div>
+<!-- AI Agent Context Banner -->
+<div class="p-space-md rounded-full bg-gradient-to-r from-primary-container/20 via-surface-container to-surface-container flex items-start gap-space-md">
+<span class="material-symbols-outlined text-primary text-xl mt-0.5 shrink-0">auto_awesome</span>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium leading-tight">Autonomous Discrepancy Prompt</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              Drafted automatically based on missing GSTR-3B filings (Nov &amp; Dec 2023) identified during automated reconciliation.
+            </p>
+</div>
+</div>
+<!-- Dynamic Message Editor Canvas -->
+<div class="flex flex-col gap-space-xs"><!-- Minimal Summary & Meta Card -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md border border-outline-variant/20 shadow-inner flex flex-col gap-space-sm">
+  <div class="flex items-center justify-between text-on-surface-variant border-b border-outline-variant/20 pb-space-xs">
+    <div class="flex items-center gap-space-xs">
+      <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">To:</span>
+      <span class="font-code-sm text-code-sm text-on-surface font-medium truncate">rajesh.kumar@apexsolar.in</span>
+    </div>
+    <span class="font-code-sm text-code-sm text-outline">SMS / WA synced</span>
+  </div>
+  <div class="flex items-center justify-between text-on-surface-variant">
+    <div class="flex items-center gap-space-xs">
+      <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Subject:</span>
+      <span class="font-body-sm text-body-sm text-on-surface font-medium truncate">Action Required: Missing GSTR-3B filings for facility #KF-2024-8812</span>
+    </div>
+  </div>
+  <div class="bg-surface-container-high/40 p-space-xs rounded font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+    <span class="text-secondary font-semibold">AI Executive Summary:</span> Acknowledges 12-month ICICI statements and requests prompt upload of missing Nov &amp; Dec 2023 GSTR-3B filings to clear underwriting hold.
+  </div>
+  <!-- Expand / Collapse Full Draft Toggle -->
+  <button class="flex items-center justify-between w-full pt-space-xs text-primary hover:text-primary-fixed font-label-md text-label-md font-semibold transition-colors group" onclick="const d = document.getElementById('full-draft-container'); d.classList.toggle('hidden'); const ic = document.getElementById('draft-expand-icon'); ic.textContent = d.classList.contains('hidden') ? 'expand_more' : 'expand_less';">
+    <span class="flex items-center gap-1">
+      <span class="material-symbols-outlined text-base">edit_note</span>
+      View / Edit Full Draft Details
+    </span>
+    <span class="material-symbols-outlined text-base group-hover:translate-y-0.5 transition-transform" id="draft-expand-icon">expand_more</span>
+  </button>
+  <!-- Collapsible Full Draft Canvas -->
+  <div class="hidden pt-space-sm border-t border-outline-variant/30 flex flex-col gap-space-sm transition-all duration-300" id="full-draft-container">
+    <div class="font-body-md text-body-md text-on-surface leading-relaxed focus:outline-none min-h-[140px] p-space-sm bg-surface-container-low/60 rounded-lg border border-outline-variant/30" id="editable-message">
+      Dear <span class="bg-primary/20 text-primary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Borrower Name: Rajesh Kumar / Apex Solar Fab LLP]</span>,<br><br>
+      Thank you for providing the 12-month ICICI Bank statements for facility <span class="bg-primary/20 text-primary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Loan ID: KF-2024-8812]</span>. Our automated credit engine completed spreading analysis with zero continuity breaks.<br><br>
+      However, during tax reconciliation, we identified missing GSTR-3B returns for <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Missing Month 1: November 2023]</span> and <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Missing Month 2: December 2023]</span>.<br><br>
+      Kindly upload the filed GSTR-3B acknowledgments through your secure dedicated link below to prevent processing delays:<br><br>
+      <span class="bg-secondary/20 text-secondary-fixed px-2 py-1 rounded font-code-sm text-code-sm select-none inline-block mt-1">
+        ⚡ [Secure Upload Link: https://kestrel.finance/in/docket/apex-8812-auth]
+      </span><br><br>
+      Best regards,<br>
+      Priya Sharma • Senior Relationship Manager, Kestrel Finance
+    </div>
+  </div>
+</div>
+
+<!-- Tokens & Live Armed Indicator with Pulse Rings -->
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm px-1">
+  <span>Tokens detected: 4 resolved dynamically</span>
+  <div class="flex items-center gap-space-xs text-secondary">
+    <span class="relative flex h-2 w-2">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.8)]"></span>
+    </span>
+    <span class="font-semibold">Live Link Armed</span>
+  </div>
+</div></div>
+<!-- Comms Utility Actions -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-colors" onclick="insertPortalLink()">
+<span class="material-symbols-outlined text-sm text-primary">link</span>
+            Attach Secure Docket Link
+          </button>
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-colors" onclick="regenerateTone('polite')">
+<span class="material-symbols-outlined text-sm text-tertiary">sentiment_satisfied</span>
+            Polite Urgent Tone
+          </button>
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-colors" onclick="regenerateTone('formal')">
+<span class="material-symbols-outlined text-sm text-primary">gavel</span>
+            Formal Audit Tone
+          </button>
+</div>
+<!-- Primary Dispatch Button -->
+<button class="w-full py-space-md rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider flex items-center justify-center gap-space-sm hover:bg-primary-fixed transition-all shadow-[0_0_20px_rgba(192,193,255,0.3)]" id="send-btn" onclick="executeSend()">
+<span class="material-symbols-outlined text-lg">send</span>
+<span>Send via WhatsApp &amp; Email Multi-Dispatch</span>
+</button>
+</div>
+<!-- Activity Timeline & Audit Logs -->
+<div class="rounded-full bg-surface-container-low p-space-lg shadow-md flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline text-xl">history_toggle_off</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Borrower Engagement History</h3>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Live Telemetry</span>
+</div>
+<div class="flex flex-col gap-space-md relative pl-space-md">
+<!-- Continuous line visually placed via pseudo bg -->
+<div class="absolute left-2.5 top-2 bottom-2 w-0.5 bg-surface-container-high"></div>
+<!-- Event 1 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-5 h-5 rounded-full bg-secondary-container/40 flex items-center justify-center text-secondary shrink-0 z-10 shadow-sm">
+<span class="material-symbols-outlined text-xs">done_all</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-body-md text-body-md text-on-surface font-medium">WhatsApp Delivery Confirmed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-code-sm">2h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Director Rajesh Kumar received verification request token #8812-GSTR.</p>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-5 h-5 rounded-full bg-primary-container/40 flex items-center justify-center text-primary shrink-0 z-10 shadow-sm">
+<span class="material-symbols-outlined text-xs">mail</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-body-md text-body-md text-on-surface font-medium">Formal Docket Email Opened</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-code-sm">3h 40m ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Session active for 4m 12s on Chrome Mac OS from Mumbai, India IP.</p>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex items-start gap-space-md relative">
+<div class="w-5 h-5 rounded-full bg-surface-container-highest flex items-center justify-center text-outline shrink-0 z-10 shadow-sm">
+<span class="material-symbols-outlined text-xs">upload</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-body-md text-body-md text-on-surface font-medium">Document Upload Portal Accessed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-code-sm">Yesterday, 18:24</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">3 files ingested: Bank Stmts, Q3 GSTR summary, and Partners PAN.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  function selectChannel(channel) {
+    const emailBtn = document.getElementById('channel-email-btn');
+    const waBtn = document.getElementById('channel-wa-btn');
+    const sendBtn = document.getElementById('send-btn');
+
+    if (channel === 'email') {
+      emailBtn.className = 'py-1.5 px-space-md rounded-full bg-surface-container-high text-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors';
+      waBtn.className = 'py-1.5 px-space-md rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors';
+      sendBtn.innerHTML = '<span class="material-symbols-outlined text-lg">mail</span><span>Dispatch via Email Gateway</span>';
+    } else {
+      waBtn.className = 'py-1.5 px-space-md rounded-full bg-surface-container-high text-secondary font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors';
+      emailBtn.className = 'py-1.5 px-space-md rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-space-xs transition-colors';
+      sendBtn.innerHTML = '<span class="material-symbols-outlined text-lg">chat</span><span>Dispatch via WhatsApp Business API</span>';
+    }
+  }
+
+  function highlightAgentEditor() {
+    const card = document.getElementById('agent-comms-card');
+    card.scrollIntoView({ behavior: 'smooth' });
+    card.classList.add('ring-2', 'ring-primary');
+    setTimeout(() => {
+      card.classList.remove('ring-2', 'ring-primary');
+    }, 1800);
+  }
+
+  function regenerateTone(tone) {
+    const editor = document.getElementById('editable-message');
+    if (tone === 'polite') {
+      editor.innerHTML = `Hi <span class="bg-primary/20 text-primary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Borrower Name: Rajesh Kumar]</span>,<br/><br/>Hope you are having a productive week! We are thrilled to partner with Apex Solar Fab LLP on facility <span class="bg-primary/20 text-primary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[Loan ID: KF-2024-8812]</span>.<br/><br/>Our preliminary credit checks look stellar. To finalize the credit paper today, could you quickly share the GSTR-3B filings for <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[November 2023]</span> & <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[December 2023]</span>?<br/><br/>Direct 1-click upload link:<br/><span class="bg-secondary/20 text-secondary-fixed px-2 py-1 rounded font-code-sm text-code-sm select-none inline-block mt-1">⚡ [Secure Upload Link: https://kestrel.finance/in/docket/apex-8812-auth]</span><br/><br/>Warm regards,<br/>Priya Sharma • Kestrel Finance`;
+    } else {
+      editor.innerHTML = `Attention: Directors of Apex Solar Fab LLP,<br/><br/>RE: Statutory Documentation Discrepancy on Application <span class="bg-primary/20 text-primary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[KF-2024-8812]</span>.<br/><br/>Underwriting compliance mandates a verified 12-month GSTR-3B reconciliation. We note that filings for <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[November 2023]</span> and <span class="bg-tertiary/20 text-tertiary-fixed px-1.5 py-0.5 rounded font-code-sm select-none">[December 2023]</span> are currently unfiled in this docket.<br/><br/>Please furnish these records via the authorized secure vault immediately to avoid underwriting hold:<br/><span class="bg-secondary/20 text-secondary-fixed px-2 py-1 rounded font-code-sm text-code-sm select-none inline-block mt-1">⚡ [Secure Upload Link: https://kestrel.finance/in/docket/apex-8812-auth]</span><br/><br/>Credit Risk Division, Kestrel Finance`;
+    }
+  }
+
+  function insertPortalLink() {
+    const editor = document.getElementById('editable-message');
+    editor.innerHTML += `<br/><br/><span class="bg-secondary/20 text-secondary-fixed px-2 py-1 rounded font-code-sm text-code-sm select-none">⚡ [Secure Upload Link: https://kestrel.finance/in/docket/apex-8812-auth]</span>`;
+  }
+
+  function executeSend() {
+    const btn = document.getElementById('send-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">refresh</span><span>Transmitting over encrypted rails...</span>';
+    btn.classList.add('opacity-75');
+
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg text-on-primary">check_circle</span><span>Sent &amp; Logged to Borrower Audit Trail!</span>';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('opacity-75');
+      }, 2500);
+    }, 1200);
+  }
+</script></main></div>
+
+</body></html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kestrel Finance — Autonomous Credit Intelligence</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#c0c1ff",
+          "primary-container": "#4f46e5",
+          "on-primary": "#07006c",
+          "secondary": "#4edea3",
+          "secondary-container": "#00a572",
+          "background": "#0a0e17",
+          "surface": "#0f131c",
+          "surface-container": "#141924",
+          "surface-container-high": "#1c2230",
+          "surface-container-highest": "#262e40",
+          "on-surface": "#f1f5f9",
+          "on-surface-variant": "#94a3b8",
+          "outline": "#334155",
+          "outline-variant": "#1e293b",
+          "tertiary": "#ffb95f",
+        },
+        fontFamily: {
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        }
+      }
+    }
+  };
+</script>
+<style>
+  @layer base {
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #070a12;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+  }
+
+  /* Refined fine-grid ambient texture */
+  .enterprise-grid {
+    background-size: 56px 56px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, #000 50%, transparent 95%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 35%, #000 50%, transparent 95%);
+  }
+
+  /* Ambient floating gradient orbs with keyframe animations */
+  @keyframes floatOrb1 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
+    50% { transform: translate(30px, -25px) scale(1.1); opacity: 0.65; }
+  }
+
+  @keyframes floatOrb2 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+    50% { transform: translate(-25px, 20px) scale(1.08); opacity: 0.55; }
+  }
+
+  @keyframes subtlePulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+  }
+
+  @keyframes shimmerBorder {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .orb-indigo {
+    animation: floatOrb1 18s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 75%);
+  }
+
+  .orb-teal {
+    animation: floatOrb2 22s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(78, 222, 163, 0.18) 0%, rgba(13, 148, 136, 0.04) 50%, transparent 75%);
+  }
+
+  .glass-card {
+    background: linear-gradient(180deg, rgba(20, 26, 38, 0.75) 0%, rgba(13, 17, 26, 0.88) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .interactive-portal-card {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .interactive-portal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 35px -8px rgba(99, 102, 241, 0.22);
+  }
+
+  .interactive-portal-card-exec:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 35px -8px rgba(78, 222, 163, 0.22);
+  }
+
+  .shimmer-button {
+    background-size: 200% 200%;
+    animation: shimmerBorder 6s ease infinite;
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-indigo-500 selection:text-white antialiased">
+<!-- Ambient Animated Depth Layer -->
+<div class="fixed inset-0 pointer-events-none z-0 enterprise-grid"></div>
+<div class="fixed top-[-10%] left-[20%] w-[680px] h-[580px] rounded-full blur-[110px] pointer-events-none z-0 orb-indigo"></div>
+<div class="fixed bottom-[5%] right-[15%] w-[620px] h-[520px] rounded-full blur-[120px] pointer-events-none z-0 orb-teal"></div>
+<!-- Sleek Enterprise Header -->
+<header class="relative z-30 w-full border-b border-white/[0.06] bg-[#070a12]/60 backdrop-blur-xl">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+<!-- Brand Mark & System Ver -->
+<div class="flex items-center space-x-6">
+<a class="flex items-center space-x-3 group" href="#">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-indigo-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+<div class="w-full h-full bg-[#0a0e18] rounded-[11px] flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-400 text-xl" style="font-variation-settings: 'FILL' 1;">dataset</span>
+</div>
+</div>
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-bold tracking-tight text-base text-white">KESTREL</span>
+<span class="text-[10px] tracking-widest font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">ENTERPRISE</span>
+</div>
+<p class="text-[11px] text-slate-400 font-mono tracking-tight leading-none mt-0.5">Autonomous Credit Mesh</p>
+</div>
+</a>
+<!-- Minimal Separator & Protocol Badge -->
+<div class="hidden md:flex items-center space-x-2.5 pl-6 border-l border-white/[0.08]">
+<div class="flex items-center space-x-2 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-[11px] font-mono text-slate-300">
+<span class="relative flex h-1.5 w-1.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
+</span>
+<span>Mesh Operational</span>
+<span class="text-slate-500">· 99.98% SLA</span>
+</div>
+</div>
+</div>
+<!-- Enterprise Security & Authentication Meta -->
+<div class="flex items-center space-x-4">
+<div class="hidden lg:flex items-center space-x-3 text-xs font-mono text-slate-400">
+<span class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-white/[0.02] border border-white/[0.06]">
+<span class="material-symbols-outlined text-xs text-indigo-400">lock</span>
+<span>Zero-Trust SSO</span>
+</span>
+<span class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-white/[0.02] border border-white/[0.06]">
+<span class="material-symbols-outlined text-xs text-emerald-400">verified_user</span>
+<span>SOC-2 Type II</span>
+</span>
+</div>
+<div class="h-4 w-px bg-white/10 hidden sm:block"></div>
+<!-- Quick Session / Help Action -->
+<a class="inline-flex items-center space-x-1.5 text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/[0.05] transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span class="font-sans">Access Support</span>
+</a>
+</div>
+</div>
+</header>
+<!-- Main Unified Centerpiece -->
+<main class="relative z-20 flex-1 max-w-5xl w-full mx-auto px-6 py-12 lg:py-16 flex flex-col justify-center items-center">
+<!-- Refined Hero Header -->
+<div class="text-center max-w-2xl mx-auto mb-12">
+<div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-mono mb-5 backdrop-blur-md">
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+<span class="tracking-widest uppercase text-[10px] font-semibold">Institutional Persona Gateway</span>
+</div>
+<h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
+      Autonomous Credit Intelligence
+    </h1>
+<p class="mt-4 text-base text-slate-400 font-sans max-w-lg mx-auto leading-relaxed">
+      Single Sign-On to Kestrel's AI-orchestrated underwriting mesh and financial ledger. Select your operational partition.
+    </p>
+</div>
+<!-- Dual Workspace Portal Cards (Clean, Minimal, High-Craft) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto items-stretch">
+<!-- Option 1: Relationship Manager -->
+<div class="interactive-portal-card glass-card relative rounded-2xl p-7 border border-white/[0.08] hover:border-indigo-500/40 flex flex-col justify-between group"><div class="absolute -top-6 -left-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-indigo-500/20 transition-all duration-500"></div>
+<div class="flex flex-col flex-1 justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <div class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300">
+        <span class="material-symbols-outlined text-2xl">auto_awesome</span>
+      </div>
+      <span class="text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300">
+        Partition A
+      </span>
+    </div>
+    <h2 class="text-xl font-bold text-white tracking-tight mb-3 group-hover:text-indigo-200 transition-colors">
+      Relationship Management &amp; Intake
+    </h2>
+    <p class="text-xs text-slate-400 font-mono mb-6 leading-relaxed">
+      Multi-source financial ingestion &amp; pre-underwriting credit readiness
+    </p>
+    <div class="flex flex-wrap gap-2 mb-8">
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-indigo-300/90 group-hover:border-indigo-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-indigo-400">upload_file</span>
+        <span>Origination</span>
+      </span>
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-indigo-300/90 group-hover:border-indigo-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-indigo-400">fingerprint</span>
+        <span>KYC Mesh</span>
+      </span>
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-indigo-300/90 group-hover:border-indigo-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-indigo-400">query_stats</span>
+        <span>Instant Spreads</span>
+      </span>
+    </div>
+  </div>
+  <div>
+    <button class="w-full relative overflow-hidden rounded-xl bg-white/[0.05] hover:bg-indigo-600 border border-white/10 hover:border-indigo-500 text-white font-medium py-3.5 px-5 transition-all duration-300 active:scale-[0.99] flex items-center justify-between group/action shadow-sm" type="button">
+      <span class="text-xs font-semibold tracking-wide text-slate-200 group-hover/action:text-white">Enter RM Workspace</span>
+      <span class="material-symbols-outlined text-base text-indigo-400 group-hover/action:text-white group-hover/action:translate-x-0.5 transition-transform">arrow_forward</span>
+    </button>
+  </div>
+</div></div>
+<!-- Option 2: Executive & Ops Suite -->
+<div class="interactive-portal-card interactive-portal-card-exec glass-card relative rounded-2xl p-7 border border-white/[0.08] hover:border-emerald-500/40 flex flex-col justify-between group"><div class="absolute -top-6 -right-6 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+<div class="flex flex-col flex-1 justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-black transition-all duration-300 shadow-sm">
+        <span class="material-symbols-outlined text-2xl">shield_person</span>
+      </div>
+      <span class="text-[10px] font-mono uppercase tracking-widest px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-semibold flex items-center space-x-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        <span>CHAIR &amp; OWNER SUITE</span>
+      </span>
+    </div>
+    <h2 class="text-xl font-bold text-white tracking-tight mb-3 group-hover:text-amber-200 transition-colors">
+      Executive &amp; Owner Console
+    </h2>
+    <p class="text-xs text-slate-400 font-mono mb-6 leading-relaxed">
+      Full-fiduciary governance, autonomous credit mandate overrides, and platform capital allocation.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-6">
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-amber-300/90 group-hover:border-amber-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-amber-400">account_balance</span>
+        <span>Capital Authority</span>
+      </span>
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-amber-300/90 group-hover:border-amber-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-amber-400">gavel</span>
+        <span>Mandate Overrides</span>
+      </span>
+      <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-amber-300/90 group-hover:border-amber-500/30 transition-colors">
+        <span class="material-symbols-outlined text-sm text-amber-400">history_edu</span>
+        <span>Audit &amp; Treasury</span>
+      </span>
+    </div>
+    <div class="flex items-center space-x-2 py-1.5 px-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06] mb-8 text-[11px] font-mono text-slate-400">
+      <span class="material-symbols-outlined text-xs text-amber-400">vpn_key</span>
+      <span>Tier-0 Cryptographic Key &amp; Hardware Token Required</span>
+    </div>
+  </div>
+  <div>
+    <button class="w-full relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-500 via-emerald-500 to-indigo-600 hover:from-amber-400 hover:via-emerald-400 hover:to-indigo-500 text-slate-950 hover:text-white font-medium py-3.5 px-5 transition-all duration-300 active:scale-[0.99] flex items-center justify-between group/action shadow-lg shadow-amber-500/10" type="button">
+      <span class="text-xs font-semibold tracking-wide text-white">Authenticate Executive Access</span>
+      <span class="material-symbols-outlined text-base text-white group-hover/action:translate-x-0.5 transition-transform">arrow_forward</span>
+    </button>
+  </div>
+</div></div>
+</div>
+<!-- Corporate Single Sign-On Bar (Sleek Linear/Stripe style) -->
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-mono text-slate-400">
+<div class="flex items-center space-x-2 text-slate-400">
+<span class="material-symbols-outlined text-sm text-indigo-400">shield</span>
+<span>Enterprise Federated SSO:</span>
+</div>
+<div class="flex items-center space-x-3">
+<button class="px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/20 text-slate-300 hover:text-white transition-colors flex items-center space-x-1.5" type="button">
+<span class="material-symbols-outlined text-xs text-slate-400">lock_person</span>
+<span>Okta Verify</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/20 text-slate-300 hover:text-white transition-colors flex items-center space-x-1.5" type="button">
+<span class="material-symbols-outlined text-xs text-slate-400">key</span>
+<span>Azure Entra ID</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/20 text-slate-300 hover:text-white transition-colors flex items-center space-x-1.5" type="button">
+<span class="material-symbols-outlined text-xs text-slate-400">fingerprint</span>
+<span>FIDO2 / Hardware Key</span>
+</button>
+</div>
+</div>
+</main>
+<!-- High-Trust Institutional Footer -->
+<footer class="relative z-30 w-full border-t border-white/[0.06] bg-[#070a12]/80 backdrop-blur-xl">
+<div class="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
+<!-- Cryptographic attestation -->
+<div class="flex items-center space-x-3">
+<span class="flex items-center space-x-1.5 text-slate-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>Node Cluster: ap-south-1 (Mumbai)</span>
+</span>
+<span class="text-white/10 hidden sm:inline">•</span>
+<span class="hidden sm:inline text-slate-500">Mutual TLS · AES-256 HSM Enclave</span>
+</div>
+<!-- Governance & Security Links -->
+<div class="flex items-center space-x-5 text-slate-400">
+<a class="hover:text-slate-200 transition-colors" href="#">Security Whitepaper</a>
+<a class="hover:text-slate-200 transition-colors" href="#">RBI Master Directions</a>
+<a class="hover:text-slate-200 transition-colors" href="#">Audit Telemetry</a>
+<a class="hover:text-slate-200 transition-colors" href="#">Status</a>
+</div>
+<!-- Copyright -->
+<div class="text-slate-500">
+      © 2025 Kestrel Finance Technologies Ltd.
+    </div>
+</div>
+</footer>
+<script>
+  // Simple micro-interaction feedback on clicks
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.add('scale-[0.98]', 'brightness-95');
+      setTimeout(() => btn.classList.remove('scale-[0.98]', 'brightness-95'), 140);
+    });
+  });
+</script>
+
+
+</body></html>
