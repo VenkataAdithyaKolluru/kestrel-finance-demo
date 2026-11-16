@@ -521,13 +521,15 @@ export default function KestrelDemo() {
     const eligible = applications.filter(({ status }) => assignedStatuses(persona).includes(status));
     if (!current || !eligible.some(({ id }) => id === current.id)) {
       const preferred = persona === "rm"
-        ? eligible.find(({ status }) => status === "intake")
+        ? view === "docs"
+          ? (eligible.find(({ status }) => status === "pending_docs") ?? eligible[0])
+          : (eligible.find(({ status }) => status === "intake") ?? eligible[0])
         : persona === "analyst"
           ? eligible.find(({ status }) => status === "spreading")
           : eligible.find(({ status }) => status === "signoff");
       setSelectedId(preferred?.id ?? "");
     }
-  }, [persona, applications, selectedId]);
+  }, [persona, applications, selectedId, view]);
 
   useEffect(() => {
     if (view !== "tracker") return;
@@ -1802,15 +1804,25 @@ export default function KestrelDemo() {
                   <strong>{selectedApplication.applicantName}</strong>
                   <span className="journey-amount">{money(selectedApplication.loanAmount)}</span>
                 </div>
-                {allowedViews.includes(continueView) ? (
-                  <button className="button primary small" disabled={isWorking} onClick={() => openView(continueView)} type="button">{continueLabel} →</button>
+                {continueView !== view && allowedViews.includes(continueView) ? (
+                  <button className="button primary small" disabled={isWorking} onClick={() => openView(continueView)} type="button">
+                    {continueLabel} →
+                  </button>
                 ) : (
                   <span className="handoff-hint">
-                    {selectedApplication.status === "spreading"
-                      ? "Intake complete · switch Workspace to Analyst"
-                      : selectedApplication.status === "signoff"
-                        ? "Analyst review complete · switch Workspace to Credit Manager"
-                        : `Next step: ${userRoles.find(({ value }) => value === (selectedApplication.status === "decided" ? "credit-manager" : "rm"))?.label ?? "next reviewer"}`}
+                    {view === "intake"
+                      ? "Active Step: Step 1A · Application Review & Acceptance"
+                      : view === "docs"
+                        ? "Active Step: Step 1B · 12-Month Document Intake"
+                        : view === "analyst"
+                          ? "Active Step: Step 2 · Analyst Spreading Review"
+                          : view === "dossier"
+                            ? "Active Step: Step 3 · Credit Manager Decision Dossier"
+                            : selectedApplication.status === "spreading"
+                              ? "Intake complete · Handed off to Credit Analyst"
+                              : selectedApplication.status === "signoff"
+                                ? "Analyst review complete · Awaiting Credit Manager"
+                                : `Next: ${userRoles.find(({ value }) => value === (selectedApplication.status === "decided" ? "credit-manager" : "rm"))?.label ?? "next reviewer"}`}
                   </span>
                 )}
               </div>
@@ -1967,43 +1979,43 @@ export default function KestrelDemo() {
           )}
 
           {view === "intake" && (
-            <div className="workflow-grid">
+            <>
               <section className="panel">
                 <div className="panel-head">
                   <div>
                     <h2>Step 1A · Application Review &amp; Acceptance</h2>
                     <p>Review incoming corporate loan applications and approve initial intake to initiate financial statement collection.</p>
                   </div>
-                  {selectedApplication?.status === "intake" ? (
-                    <button className="button primary small" disabled={isWorking} onClick={() => void acceptApplication()} type="button">
-                      {isWorking ? <><span className="spinner" /> Accepting…</> : "Accept & request documents →"}
-                    </button>
-                  ) : (
-                    <span className={`status-pill ${selectedApplication?.status ?? ""}`}>{activeStage}</span>
-                  )}
+                  <span className="status-pill intake">
+                    {applications.filter((app) => app.status === "intake").length} Incoming Awaiting Acceptance
+                  </span>
                 </div>
                 <div className="panel-body">
                   {applications.filter((app) => app.status === "intake").length === 0 ? (
-                    <div className="notice info" style={{ padding: 20 }}>
-                      <strong>No incoming applications currently awaiting initial RM acceptance.</strong>
-                      <p style={{ margin: "6px 0 0", color: "var(--text-muted)", fontSize: 13 }}>
-                        All submitted applications have already been accepted and moved to Document Intake.
+                    <div className="notice info" style={{ padding: 28, textAlign: "center" }}>
+                      <div style={{ fontSize: 28, marginBottom: 8, color: "#10b981" }}>✓</div>
+                      <strong style={{ fontSize: 16, color: "var(--text-bright)", display: "block" }}>
+                        All incoming applications have been accepted!
+                      </strong>
+                      <p style={{ margin: "8px 0 18px", color: "var(--text-muted)", fontSize: 13 }}>
+                        No files are currently pending initial RM review. Advance to Document Intake to upload or verify financial statements.
                       </p>
-                      <div style={{ marginTop: 12 }}>
-                        <button className="button primary small" onClick={() => openView("docs")} type="button">
-                          Go to Document Intake →
-                        </button>
-                      </div>
+                      <button className="button primary" onClick={() => openView("docs")} type="button">
+                        Open Document Intake (Step 1B) →
+                      </button>
                     </div>
                   ) : (
                     <>
-                      <div className="form-row">
-                        <label className="field-label" htmlFor="intake-application">Incoming Application</label>
+                      <div className="form-row" style={{ maxWidth: 520, marginBottom: 18 }}>
+                        <label className="field-label" htmlFor="intake-application">
+                          Select Incoming Application for Review
+                        </label>
                         <select
                           className="select"
                           id="intake-application"
                           onChange={(event) => {
                             setSelectedId(event.target.value);
+                            window.history.replaceState({}, "", workspacePath("rm", "intake", event.target.value));
                             setError(null);
                           }}
                           value={selectedApplication?.id ?? ""}
@@ -2017,67 +2029,102 @@ export default function KestrelDemo() {
                       </div>
 
                       {selectedApplication && (
-                        <div style={{ marginTop: 16, background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", borderRadius: 12, padding: 18 }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                            <div>
-                              <h3 style={{ margin: "0 0 4px", fontSize: 16, color: "var(--text-bright)" }}>
-                                {selectedApplication.applicantName}
-                              </h3>
-                              <div style={{ color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
-                                Application ID: {selectedApplication.id}
+                        <div className="intake-deal-card">
+                          <div className="intake-deal-header">
+                            <div className="intake-deal-title">
+                              <h3>{selectedApplication.applicantName}</h3>
+                              <div className="intake-deal-meta">
+                                <span className="intake-deal-id">ID: {selectedApplication.id}</span>
+                                <span className="status-pill intake">Step 1A · Intake Review</span>
                               </div>
                             </div>
-                            <span className="status-pill intake">Awaiting Acceptance</span>
-                          </div>
-
-                          <div className="metric-grid" style={{ marginBottom: 16 }}>
-                            <div className="metric">
-                              <span className="metric-label">Requested Loan Amount</span>
-                              <strong className="metric-value" style={{ color: "var(--primary)" }}>{money(selectedApplication.loanAmount)}</strong>
-                              <span className="metric-foot">Commercial Credit Proposal</span>
-                            </div>
-                            <div className="metric">
-                              <span className="metric-label">Submission Age</span>
-                              <strong className="metric-value">
-                                {Math.max(0, Math.floor((Date.now() - new Date(selectedApplication.createdAt).getTime()) / 86400000))} days
-                              </strong>
-                              <span className="metric-foot">In Intake Queue</span>
-                            </div>
-                            <div className="metric">
-                              <span className="metric-label">Assigned Officer</span>
-                              <strong className="metric-value" style={{ fontSize: 14 }}>{authenticatedUser || "Relationship Manager"}</strong>
-                              <span className="metric-foot">Commercial Intake Desk</span>
+                            <div className="intake-deal-amount-box">
+                              <div className="intake-deal-amount">{money(selectedApplication.loanAmount)}</div>
+                              <div className="intake-deal-amount-sub">Commercial Credit Facility Proposal</div>
                             </div>
                           </div>
 
-                          <div style={{ background: "rgba(99, 102, 241, 0.05)", border: "1px solid rgba(99, 102, 241, 0.2)", borderRadius: 8, padding: 14, marginBottom: 16 }}>
-                            <strong style={{ fontSize: 13, color: "var(--text-bright)", display: "block", marginBottom: 8 }}>
-                              Pre-Intake Mandate &amp; Eligibility Checks
-                            </strong>
-                            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>
-                              <li>✓ Preliminary corporate entity identity, PAN, and MCA filings verified</li>
-                              <li>✓ Proposed facility structure conforms to commercial lending parameters</li>
-                              <li>✓ Accepting this application will initiate the 12-month document collection process (Bank, GSTR-1, GSTR-3B)</li>
-                            </ul>
-                          </div>
+                          <div className="intake-deal-grid">
+                            {/* Left Column: Borrower Profile & Deal Parameters */}
+                            <div className="intake-info-group">
+                              <div className="field-label" style={{ marginBottom: 2 }}>Borrower &amp; Facility Profile</div>
+                              <div className="intake-info-item">
+                                <span className="intake-info-label">Contact Signatory</span>
+                                <span className="intake-info-val">
+                                  {selectedApplication.customerProfile?.contactName || "Managing Director"}
+                                </span>
+                              </div>
+                              <div className="intake-info-item">
+                                <span className="intake-info-label">Corporate Email</span>
+                                <span className="intake-info-val" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>
+                                  {selectedApplication.customerProfile?.email || "finance@corporate.test"}
+                                </span>
+                              </div>
+                              <div className="intake-info-item">
+                                <span className="intake-info-label">Registered Office</span>
+                                <span className="intake-info-val">
+                                  {selectedApplication.customerProfile?.businessAddress || "Commercial Hub, India"}
+                                </span>
+                              </div>
+                              <div className="intake-info-item">
+                                <span className="intake-info-label">Queue Age</span>
+                                <span className="intake-info-val">
+                                  {Math.max(0, Math.floor((Date.now() - new Date(selectedApplication.createdAt).getTime()) / 86400000))} days since submission
+                                </span>
+                              </div>
+                              <div className="intake-info-item">
+                                <span className="intake-info-label">Assigned Desk</span>
+                                <span className="intake-info-val">
+                                  {authenticatedUser || "Relationship Manager (Intake Desk)"}
+                                </span>
+                              </div>
+                            </div>
 
-                          <div className="signoff-actions" style={{ marginTop: 20 }}>
-                            <button
-                              className="button primary"
-                              disabled={isWorking || selectedApplication.status !== "intake"}
-                              onClick={() => void acceptApplication()}
-                              type="button"
-                              style={{ minHeight: 40 }}
-                            >
-                              {isWorking ? (
-                                <>
-                                  <span className="spinner" />
-                                  <span>Accepting application…</span>
-                                </>
-                              ) : (
-                                <span>Accept Application &amp; Proceed to Document Intake →</span>
-                              )}
-                            </button>
+                            {/* Right Column: Pre-Intake Eligibility & Acceptance Action */}
+                            <div className="intake-action-column">
+                              <div className="intake-checklist-box">
+                                <div className="intake-checklist-title">
+                                  <span>🛡</span>
+                                  <span>Pre-Intake Mandate &amp; Eligibility Checks</span>
+                                </div>
+                                <ul className="intake-checklist-items">
+                                  <li>
+                                    <span className="intake-checklist-check">✓</span>
+                                    <span>Corporate identity, PAN tokenization, and MCA incorporation verified</span>
+                                  </li>
+                                  <li>
+                                    <span className="intake-checklist-check">✓</span>
+                                    <span>Credit proposal within mid-market underwriting exposure parameters</span>
+                                  </li>
+                                  <li>
+                                    <span className="intake-checklist-check">✓</span>
+                                    <span>Initiates 12-month document collection mandate (Bank Statements, GSTR-1, GSTR-3B)</span>
+                                  </li>
+                                </ul>
+                              </div>
+
+                              <div style={{ marginTop: 12 }}>
+                                <button
+                                  className="button primary"
+                                  disabled={isWorking || selectedApplication.status !== "intake"}
+                                  onClick={() => void acceptApplication()}
+                                  style={{ width: "100%", minHeight: 46, fontSize: 14, justifyContent: "center" }}
+                                  type="button"
+                                >
+                                  {isWorking ? (
+                                    <>
+                                      <span className="spinner" />
+                                      <span>Accepting Application…</span>
+                                    </>
+                                  ) : (
+                                    <span>✓ Accept Application &amp; Proceed to Document Intake →</span>
+                                  )}
+                                </button>
+                                <p className="subtle" style={{ textAlign: "center", marginTop: 8, fontSize: 11.5 }}>
+                                  Acceptance marks the file as approved for collection and opens Step 1B Document Intake.
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -2085,12 +2132,13 @@ export default function KestrelDemo() {
                   )}
                 </div>
               </section>
+
               {selectedApplication && renderCommunicationPanel("Customer communication · Application acceptance")}
-            </div>
+            </>
           )}
 
           {view === "docs" && (
-            <div className="workflow-grid">
+            <>
               <section className="panel">
                 <div className="panel-head">
                   <div>
@@ -2112,6 +2160,7 @@ export default function KestrelDemo() {
                         setIntakeCompleteness(null);
                         setPreviewFiles(new Map());
                         setLatestPreview(null);
+                        window.history.replaceState({}, "", workspacePath("rm", "docs", event.target.value));
                       }}
                       value={selectedApplication?.id ?? ""}
                     >
@@ -2200,7 +2249,7 @@ export default function KestrelDemo() {
                 </div>
               </section>
               {selectedApplication && renderCommunicationPanel("Customer communication · Document intake")}
-            </div>
+            </>
           )}
 
           {view === "analyst" && (

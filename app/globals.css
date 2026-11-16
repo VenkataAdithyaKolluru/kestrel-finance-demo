@@ -354,6 +354,150 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--text-muted);
 }
 
+/* ==========================================================================
+   APPLICATION ACCEPTANCE (STEP 1A) CARDS & LAYOUT
+   ========================================================================== */
+.intake-deal-card {
+  margin-top: 16px;
+  background: linear-gradient(180deg, rgba(24, 32, 50, 0.6) 0%, rgba(14, 19, 31, 0.75) 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+.intake-deal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.intake-deal-title h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+.intake-deal-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.intake-deal-id {
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.intake-deal-amount-box {
+  text-align: right;
+}
+
+.intake-deal-amount {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.2;
+}
+
+.intake-deal-amount-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.intake-deal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 860px) {
+  .intake-deal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.intake-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intake-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
+.intake-info-label {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.intake-info-val {
+  color: var(--text-bright);
+  font-weight: 500;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.intake-checklist-box {
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.intake-checklist-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.intake-checklist-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.intake-checklist-items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.intake-checklist-check {
+  color: #10b981;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
 .role-segment-btn {
   display: flex;
   align-items: center;
