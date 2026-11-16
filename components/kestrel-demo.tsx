@@ -22,7 +22,7 @@ import dynamic from "next/dynamic";
 
 const PdfPagePreview = dynamic(() => import("./pdf-page-preview"), { ssr: false });
 
-type View = "tracker" | "portfolio" | "intake" | "analyst" | "dossier" | "owner";
+type View = "tracker" | "portfolio" | "intake" | "docs" | "analyst" | "dossier" | "owner";
 type StatusFilter = "all" | LoanApplication["status"];
 const userRoles: { value: Exclude<Persona, "owner">; label: string; defaultView: View }[] = [
   { value: "rm", label: "Relationship Manager", defaultView: "tracker" },
@@ -134,9 +134,10 @@ function assignedStatuses(persona: Persona | null): LoanApplication["status"][] 
 }
 
 function viewForAssignedApplication(persona: Persona | null, application: LoanApplication): View | null {
-  if (persona === "rm" && (application.status === "intake" || application.status === "pending_docs")) return "intake";
+  if (persona === "rm" && application.status === "intake") return "intake";
+  if (persona === "rm" && application.status === "pending_docs") return "docs";
   if (persona === "analyst" && application.status === "spreading") return "analyst";
-  if (persona === "credit-manager" && application.status === "signoff") return "dossier";
+  if (persona === "credit-manager" && (application.status === "signoff" || application.status === "decided")) return "dossier";
   return null;
 }
 
@@ -149,7 +150,7 @@ const stages: { key: LoanApplication["status"]; label: string }[] = [
 ];
 
 const personaViews: Record<Persona, View[]> = {
-  rm: ["tracker", "portfolio", "intake"],
+  rm: ["tracker", "portfolio", "intake", "docs"],
   analyst: ["tracker", "portfolio", "analyst"],
   "credit-manager": ["tracker", "portfolio", "dossier"],
   owner: ["owner"],
@@ -160,6 +161,7 @@ function workspacePath(persona: Persona, view: View, applicationId?: string): st
     tracker: "work",
     portfolio: "applications",
     intake: "intake",
+    docs: "docs",
     analyst: "studio",
     dossier: "dossier",
     owner: "console",
@@ -182,6 +184,7 @@ function routeSelection(url: URL): { persona: Persona; view: View; applicationId
     tracker: "tracker",
     applications: "portfolio",
     intake: "intake",
+    docs: "docs",
     studio: "analyst",
     dossier: "dossier",
     console: "owner",
@@ -196,7 +199,8 @@ function routeSelection(url: URL): { persona: Persona; view: View; applicationId
 const navigation: { key: View; label: string; icon: string }[] = [
   { key: "tracker", label: "My work", icon: "✓" },
   { key: "portfolio", label: "All applications", icon: "▦" },
-  { key: "intake", label: "Document intake", icon: "⇧" },
+  { key: "intake", label: "Application Acceptance", icon: "📥" },
+  { key: "docs", label: "Document Intake", icon: "📑" },
   { key: "analyst", label: "Analyst review", icon: "⌕" },
   { key: "dossier", label: "Credit decision", icon: "▤" },
   { key: "owner", label: "Owner console", icon: "◈" },
@@ -214,9 +218,14 @@ const pageCopy: Record<View, { eyebrow: string; title: string; description: stri
     description: "Track every application across the shared pipeline. Open only cases currently assigned to your role.",
   },
   intake: {
-    eyebrow: "Relationship manager workspace",
-    title: "Smart intake portal",
-    description: "Run the demo completeness check and draft a contextual request for missing GST statements.",
+    eyebrow: "Step 1A · Relationship Manager",
+    title: "Application Acceptance",
+    description: "Review incoming credit facility requests, verify eligibility, and approve application intake.",
+  },
+  docs: {
+    eyebrow: "Step 1B · Relationship Manager",
+    title: "Document Intake & Coverage",
+    description: "Upload and verify 12 months of Bank statements, GSTR-1, and GSTR-3B filings before analyst spreading.",
   },
   analyst: {
     eyebrow: "Analyst workspace",
@@ -332,13 +341,9 @@ export default function KestrelDemo() {
   const [intakeCompleteness, setIntakeCompleteness] = useState<IntakeCompleteness | null>(null);
   const [analystDocumentReview, setAnalystDocumentReview] = useState<IntakeCompleteness | null>(null);
 
-  // Command Palette & Rapid Action Modals
+  // Command Palette
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [commandPaletteQuery, setCommandPaletteQuery] = useState("");
-  const [isNewAppModalOpen, setIsNewAppModalOpen] = useState(false);
-  const [newAppName, setNewAppName] = useState("");
-  const [newAppAmount, setNewAppAmount] = useState("");
-  const [isCreatingApp, setIsCreatingApp] = useState(false);
 
   // Real-time Queue Counters for Header Telemetry
   const rmCount = useMemo(
@@ -362,36 +367,6 @@ export default function KestrelDemo() {
       .slice(0, 8);
   }, [applications, commandPaletteQuery]);
 
-  async function handleCreateApplication(event: React.FormEvent): Promise<void> {
-    event.preventDefault();
-    const name = newAppName.trim();
-    const amount = Number(newAppAmount.replace(/[^0-9.]/g, ""));
-    if (!name || isNaN(amount) || amount <= 0) return;
-    setIsCreatingApp(true);
-    setError(null);
-    try {
-      const result = await api<{ application: LoanApplication }>("/api/applications/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ applicantName: name, loanAmount: amount }),
-      });
-      setApplications((current) => [result.application, ...current]);
-      setSelectedId(result.application.id);
-      setIsNewAppModalOpen(false);
-      setNewAppName("");
-      setNewAppAmount("");
-      if (persona !== "rm") {
-        await switchUserRole("rm");
-      }
-      setView("intake");
-      setMessage(`Application ${result.application.id} created for ${result.application.applicantName}. Ready for document intake.`);
-    } catch (cause: unknown) {
-      showError(cause);
-    } finally {
-      setIsCreatingApp(false);
-    }
-  }
-
   function handleSelectFromCommandPalette(application: LoanApplication): void {
     setIsCommandPaletteOpen(false);
     setCommandPaletteQuery("");
@@ -405,7 +380,6 @@ export default function KestrelDemo() {
         setIsCommandPaletteOpen((prev) => !prev);
       } else if (event.key === "Escape") {
         setIsCommandPaletteOpen(false);
-        setIsNewAppModalOpen(false);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
@@ -413,11 +387,23 @@ export default function KestrelDemo() {
   }, []);
 
   const selectedApplication = useMemo(() => {
-    const application = applications.find(({ id }) => id === selectedId) ?? null;
-    if (!application) return null;
-    if (view === "intake" && (persona !== "rm" || (application.status !== "intake" && application.status !== "pending_docs"))) return null;
-    if (view === "analyst" && (persona !== "analyst" || application.status !== "spreading")) return null;
-    if (view === "dossier" && (persona !== "credit-manager" || (application.status !== "signoff" && application.status !== "decided"))) return null;
+    let application = applications.find(({ id }) => id === selectedId) ?? null;
+    if (view === "intake") {
+      if (persona !== "rm") return null;
+      if (!application || application.status !== "intake") {
+        application = applications.find((a) => a.status === "intake") ?? null;
+      }
+      return application;
+    }
+    if (view === "docs") {
+      if (persona !== "rm") return null;
+      if (!application || application.status !== "pending_docs") {
+        application = applications.find((a) => a.status === "pending_docs") ?? null;
+      }
+      return application;
+    }
+    if (view === "analyst" && (persona !== "analyst" || application?.status !== "spreading")) return null;
+    if (view === "dossier" && (persona !== "credit-manager" || (application?.status !== "signoff" && application?.status !== "decided"))) return null;
     return application;
   }, [applications, selectedId, view, persona]);
   const ownerSelectedApplication = useMemo(
@@ -482,22 +468,34 @@ export default function KestrelDemo() {
       : "No applications are waiting in your RM queue.";
   const allowedViews = persona ? personaViews[persona] : [];
   const activeJourneyIndex = selectedApplication
-    ? selectedApplication.status === "intake" || selectedApplication.status === "pending_docs"
-      ? 1
-      : selectedApplication.status === "spreading"
-        ? 2
-        : 3
+    ? selectedApplication.status === "intake"
+      ? 0
+      : selectedApplication.status === "pending_docs"
+        ? 1
+        : selectedApplication.status === "spreading"
+          ? 2
+          : 3
     : 0;
   const continueView: View = selectedApplication
-    ? selectedApplication.status === "intake" || selectedApplication.status === "pending_docs"
+    ? selectedApplication.status === "intake"
       ? "intake"
-      : selectedApplication.status === "spreading"
-        ? "analyst"
-        : "dossier"
+      : selectedApplication.status === "pending_docs"
+        ? "docs"
+        : selectedApplication.status === "spreading"
+          ? "analyst"
+          : "dossier"
     : "tracker";
   const continueLabel = selectedApplication?.status === "decided"
     ? "Review completed decision"
-    : `Continue to ${continueView === "intake" ? "documents" : continueView === "analyst" ? "analyst review" : "credit decision"}`;
+    : `Continue to ${
+        continueView === "intake"
+          ? "application acceptance"
+          : continueView === "docs"
+            ? "document intake"
+            : continueView === "analyst"
+              ? "analyst review"
+              : "credit decision"
+      }`;
 
   const loadApplications = useCallback(async (silent = false) => {
     if (!silent) setIsLoadingApplications(true);
@@ -725,9 +723,21 @@ export default function KestrelDemo() {
       setError("This workspace is not available for the signed-in account.");
       return;
     }
-    if (applicationId) setSelectedId(applicationId);
+    let targetAppId = applicationId;
+    if (nextView === "intake") {
+      const intakeApps = applications.filter((a) => a.status === "intake");
+      if (!intakeApps.some((a) => a.id === targetAppId)) {
+        targetAppId = intakeApps[0]?.id;
+      }
+    } else if (nextView === "docs") {
+      const docApps = applications.filter((a) => a.status === "pending_docs");
+      if (!docApps.some((a) => a.id === targetAppId)) {
+        targetAppId = docApps[0]?.id;
+      }
+    }
+    if (targetAppId) setSelectedId(targetAppId);
     setView(nextView);
-    window.history.pushState({}, "", workspacePath(persona, nextView, applicationId));
+    window.history.pushState({}, "", workspacePath(persona, nextView, targetAppId));
     setError(null);
     setMessage(null);
   }
@@ -923,7 +933,10 @@ export default function KestrelDemo() {
         method: "POST",
       });
       setApplications((items) => items.map((item) => item.id === result.application.id ? result.application : item));
-      setMessage(`${result.application.id} accepted. Request the required bank, GSTR-1, and GSTR-3B statements from the applicant.`);
+      setSelectedId(result.application.id);
+      setView("docs");
+      window.history.pushState({}, "", workspacePath("rm", "docs", result.application.id));
+      setMessage(`${result.application.id} accepted. Proceeding to Document Intake to collect and verify statements.`);
     } catch (cause: unknown) {
       showError(cause);
     } finally {
@@ -1803,8 +1816,8 @@ export default function KestrelDemo() {
               </div>
               <ol className="journey-steps">
                 {[
-                  { label: "Application", stepView: "tracker" as View },
-                  { label: "Documents", stepView: "intake" as View },
+                  { label: "Application Acceptance", stepView: "intake" as View },
+                  { label: "Document Intake", stepView: "docs" as View },
                   { label: "Analyst review", stepView: "analyst" as View },
                   { label: "Credit decision", stepView: "dossier" as View },
                 ].map((step, index) => {
@@ -1835,11 +1848,6 @@ export default function KestrelDemo() {
                   <div><h2>{taskQueueTitle}</h2><p>{taskQueueDescription}</p></div>
                   <div className="heading-actions">
                     <input aria-label="Search my tasks" className="field tracker-search" onChange={(event) => setTrackerQuery(event.target.value)} placeholder="Search ID or applicant" value={trackerQuery} />
-                    {persona === "rm" && (
-                      <button className="button primary small" disabled={isWorking} onClick={() => setIsNewAppModalOpen(true)} type="button">
-                        + New Application
-                      </button>
-                    )}
                     <button className="button small" onClick={() => openView("portfolio")} type="button">All applications →</button>
                     <button className="button small" disabled={isLoadingApplications} onClick={() => void loadApplications()} type="button">{isLoadingApplications ? <span className="spinner" /> : "↻"} Refresh</button>
                   </div>
@@ -1852,7 +1860,7 @@ export default function KestrelDemo() {
                         ? <tr><td colSpan={5}>{normalizedTrackerQuery ? `No role-queue applications match "${trackerQuery}".` : taskQueueEmptyMessage}</td></tr>
                         : taskQueue.map((application) => {
                           const actionLabel = persona === "rm"
-                            ? application.status === "intake" ? "Review & accept" : "Continue document intake"
+                            ? application.status === "intake" ? "Review & accept" : "Upload & check docs"
                             : persona === "analyst" ? "Open analyst review" : "Open credit decision";
                           return (
                             <tr className="task-row" key={application.id}>
@@ -1962,71 +1970,236 @@ export default function KestrelDemo() {
             <div className="workflow-grid">
               <section className="panel">
                 <div className="panel-head">
-                  <div><h2>Step 1 · Collect and check documents</h2><p>Accept the application, request documents, then verify the last 12 months of bank, GSTR-1, and GSTR-3B statements.</p></div>
-                  {selectedApplication?.status === "intake"
-                    ? <button className="button primary small" disabled={isWorking} onClick={() => void acceptApplication()} type="button">Accept & request documents</button>
-                    : <span className={`status-pill ${selectedApplication?.status ?? ""}`}>{activeStage}</span>}
+                  <div>
+                    <h2>Step 1A · Application Review &amp; Acceptance</h2>
+                    <p>Review incoming corporate loan applications and approve initial intake to initiate financial statement collection.</p>
+                  </div>
+                  {selectedApplication?.status === "intake" ? (
+                    <button className="button primary small" disabled={isWorking} onClick={() => void acceptApplication()} type="button">
+                      {isWorking ? <><span className="spinner" /> Accepting…</> : "Accept & request documents →"}
+                    </button>
+                  ) : (
+                    <span className={`status-pill ${selectedApplication?.status ?? ""}`}>{activeStage}</span>
+                  )}
+                </div>
+                <div className="panel-body">
+                  {applications.filter((app) => app.status === "intake").length === 0 ? (
+                    <div className="notice info" style={{ padding: 20 }}>
+                      <strong>No incoming applications currently awaiting initial RM acceptance.</strong>
+                      <p style={{ margin: "6px 0 0", color: "var(--text-muted)", fontSize: 13 }}>
+                        All submitted applications have already been accepted and moved to Document Intake.
+                      </p>
+                      <div style={{ marginTop: 12 }}>
+                        <button className="button primary small" onClick={() => openView("docs")} type="button">
+                          Go to Document Intake →
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="form-row">
+                        <label className="field-label" htmlFor="intake-application">Incoming Application</label>
+                        <select
+                          className="select"
+                          id="intake-application"
+                          onChange={(event) => {
+                            setSelectedId(event.target.value);
+                            setError(null);
+                          }}
+                          value={selectedApplication?.id ?? ""}
+                        >
+                          {applications.filter((app) => app.status === "intake").map((application) => (
+                            <option key={application.id} value={application.id}>
+                              {application.id} · {application.applicantName} ({money(application.loanAmount)})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {selectedApplication && (
+                        <div style={{ marginTop: 16, background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", borderRadius: 12, padding: 18 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                            <div>
+                              <h3 style={{ margin: "0 0 4px", fontSize: 16, color: "var(--text-bright)" }}>
+                                {selectedApplication.applicantName}
+                              </h3>
+                              <div style={{ color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
+                                Application ID: {selectedApplication.id}
+                              </div>
+                            </div>
+                            <span className="status-pill intake">Awaiting Acceptance</span>
+                          </div>
+
+                          <div className="metric-grid" style={{ marginBottom: 16 }}>
+                            <div className="metric">
+                              <span className="metric-label">Requested Loan Amount</span>
+                              <strong className="metric-value" style={{ color: "var(--primary)" }}>{money(selectedApplication.loanAmount)}</strong>
+                              <span className="metric-foot">Commercial Credit Proposal</span>
+                            </div>
+                            <div className="metric">
+                              <span className="metric-label">Submission Age</span>
+                              <strong className="metric-value">
+                                {Math.max(0, Math.floor((Date.now() - new Date(selectedApplication.createdAt).getTime()) / 86400000))} days
+                              </strong>
+                              <span className="metric-foot">In Intake Queue</span>
+                            </div>
+                            <div className="metric">
+                              <span className="metric-label">Assigned Officer</span>
+                              <strong className="metric-value" style={{ fontSize: 14 }}>{authenticatedUser || "Relationship Manager"}</strong>
+                              <span className="metric-foot">Commercial Intake Desk</span>
+                            </div>
+                          </div>
+
+                          <div style={{ background: "rgba(99, 102, 241, 0.05)", border: "1px solid rgba(99, 102, 241, 0.2)", borderRadius: 8, padding: 14, marginBottom: 16 }}>
+                            <strong style={{ fontSize: 13, color: "var(--text-bright)", display: "block", marginBottom: 8 }}>
+                              Pre-Intake Mandate &amp; Eligibility Checks
+                            </strong>
+                            <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: "var(--text-muted)", lineHeight: 1.6 }}>
+                              <li>✓ Preliminary corporate entity identity, PAN, and MCA filings verified</li>
+                              <li>✓ Proposed facility structure conforms to commercial lending parameters</li>
+                              <li>✓ Accepting this application will initiate the 12-month document collection process (Bank, GSTR-1, GSTR-3B)</li>
+                            </ul>
+                          </div>
+
+                          <div className="signoff-actions" style={{ marginTop: 20 }}>
+                            <button
+                              className="button primary"
+                              disabled={isWorking || selectedApplication.status !== "intake"}
+                              onClick={() => void acceptApplication()}
+                              type="button"
+                              style={{ minHeight: 40 }}
+                            >
+                              {isWorking ? (
+                                <>
+                                  <span className="spinner" />
+                                  <span>Accepting application…</span>
+                                </>
+                              ) : (
+                                <span>Accept Application &amp; Proceed to Document Intake →</span>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </section>
+              {selectedApplication && renderCommunicationPanel("Customer communication · Application acceptance")}
+            </div>
+          )}
+
+          {view === "docs" && (
+            <div className="workflow-grid">
+              <section className="panel">
+                <div className="panel-head">
+                  <div>
+                    <h2>Step 1B · 12-Month Financial Statement Intake &amp; Coverage</h2>
+                    <p>Collect and verify complete 12-month coverage of Bank, GSTR-1, and GSTR-3B statements before analyst spreading handoff.</p>
+                  </div>
+                  <span className={`status-pill ${selectedApplication?.status ?? ""}`}>{activeStage}</span>
                 </div>
                 <div className="panel-body">
                   <div className="form-row">
-                    <label className="field-label" htmlFor="intake-application">Application</label>
-                    <select className="select" id="intake-application" onChange={(event) => { setSelectedId(event.target.value); setFileNames([]); setOcrFileNames([]); setIntakeCompleteness(null); setPreviewFiles(new Map()); setLatestPreview(null); }} value={selectedApplication?.id ?? ""}>
-                      {applications.filter(({ status }) => assignedStatuses(persona).includes(status)).map((application) => <option key={application.id} value={application.id}>{application.id} · {application.applicantName}</option>)}
+                    <label className="field-label" htmlFor="docs-application">Application in Document Intake</label>
+                    <select
+                      className="select"
+                      id="docs-application"
+                      onChange={(event) => {
+                        setSelectedId(event.target.value);
+                        setFileNames([]);
+                        setOcrFileNames([]);
+                        setIntakeCompleteness(null);
+                        setPreviewFiles(new Map());
+                        setLatestPreview(null);
+                      }}
+                      value={selectedApplication?.id ?? ""}
+                    >
+                      {applications.filter(({ status }) => status === "pending_docs" || status === "intake").map((application) => (
+                        <option key={application.id} value={application.id}>
+                          {application.id} · {application.applicantName} ({stages.find((s) => s.key === application.status)?.label})
+                        </option>
+                      ))}
                     </select>
                   </div>
-                  <div className="form-row">
-                    <label className="field-label" htmlFor="document-category">Statement type for next upload</label>
-                    <select className="select" disabled={isWorking} id="document-category" onChange={(event) => {
-                      const category = event.target.value;
-                      if (category === "bank" || category === "gstr1" || category === "gstr3b") setDocumentCategory(category);
-                    }} value={documentCategory}>
-                      <option value="bank">Bank statement</option>
-                      <option value="gstr1">GSTR-1</option>
-                      <option value="gstr3b">GSTR-3B</option>
-                    </select>
-                  </div>
-                  <label
-                    className={`document-drop${isDragging ? " dragging" : ""}`}
-                    htmlFor="documents"
-                    onDragEnter={(event) => { event.preventDefault(); setIsDragging(true); }}
-                    onDragLeave={(event) => { event.preventDefault(); setIsDragging(false); }}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={handleDrop}
-                  >
-                    <span style={{ color: "var(--primary)", fontSize: 24 }}>⇧</span>
-                    <strong style={{ fontSize: 12 }}>{isUploading ? "Scanning PDF securely…" : "Drop statement PDFs here or browse"}</strong>
-                    <span className="subtle">Add all 12 months for each statement type. Bank statements and GSTR-1 / GSTR-3B only · PDF files only</span>
-                    <input accept="application/pdf,.pdf" disabled={isWorking || selectedApplication?.status !== "pending_docs"} id="documents" multiple onChange={handleFileInput} style={{ display: "none" }} type="file" />
-                  </label>
-                  {selectedApplication?.status === "intake" && <div className="notice info">Accept this application first. Then upload the documents requested from the applicant.</div>}
-                  {selectedApplication?.status === "pending_docs" && <div className="notice info">Only after you verify complete 12-month coverage will this application appear in the Analyst work queue.</div>}
-                  {rejectedFiles.length > 0 && <div className="notice error">Rejected: {rejectedFiles.join(", ")}. Upload PDF statements only.</div>}
-                  {fileNames.length > 0 && <div className="notice info">PDFs parsed in server memory for this demo: {fileNames.join(", ")}{ocrFileNames.length > 0 ? ` · Local OCR applied to: ${ocrFileNames.join(", ")}` : ""}</div>}
-                  {intakeCompleteness && <div className="document-list">
-                    {(["bank", "gstr1", "gstr3b"] as DocumentCategory[]).map((category) => {
-                      const covered = intakeCompleteness.coverage[category];
-                      const missing = intakeCompleteness.missingMonths[category];
-                      return <div className="document-row" key={category}>
-                        <span className="document-name">{category === "bank" ? "Bank" : category.toUpperCase()} · {covered.length}/12 months</span>
-                        <span className={`document-state${missing.length ? " missing" : ""}`}>{missing.length ? `${missing.length} period(s) missing` : "12 months verified"}</span>
-                      </div>;
-                    })}
-                    {Object.entries(intakeCompleteness.missingMonths).some(([, months]) => months.length > 0) && (
-                      <p className="subtle">Missing: {Object.entries(intakeCompleteness.missingMonths).filter(([, months]) => months.length > 0).map(([category, months]) => `${category.toUpperCase()} ${months.join(", ")}`).join(" · ")}</p>
-                    )}
-                  </div>}
-                  {fileNames.length > 0 && <p className="subtle">Searchable text and page positions are kept in memory; PAN/Aadhaar-like identifiers are tokenized, and raw PDF bytes are not retained.</p>}
-                  <div className="signoff-actions">
-                    <button className="button" disabled={isWorking || !selectedApplication || selectedApplication.status !== "pending_docs"} onClick={() => void loadSamplePacket()} type="button">
-                      {isWorking ? <><span className="spinner" /> Loading sample packet…</> : "Use demo sample packet"}
-                    </button>
-                    <button className="button primary" disabled={!selectedApplication || selectedApplication.status !== "pending_docs" || isWorking} onClick={() => void runIntake()} type="button">
-                      {isWorking ? <><span className="spinner" /> Checking…</> : "Verify & hand off complete documents"}
-                    </button>
-                  </div>
+
+                  {selectedApplication?.status === "intake" ? (
+                    <div className="notice info" style={{ padding: 16 }}>
+                      <strong>This application is awaiting initial acceptance.</strong>
+                      <p style={{ margin: "6px 0 0", color: "var(--text-muted)", fontSize: 13 }}>
+                        Accept the application in Step 1A before collecting and verifying statements.
+                      </p>
+                      <div style={{ marginTop: 12 }}>
+                        <button className="button primary small" onClick={() => openView("intake")} type="button">
+                          Go to Application Acceptance →
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="form-row">
+                        <label className="field-label" htmlFor="document-category">Statement type for next upload</label>
+                        <select
+                          className="select"
+                          disabled={isWorking}
+                          id="document-category"
+                          onChange={(event) => {
+                            const category = event.target.value;
+                            if (category === "bank" || category === "gstr1" || category === "gstr3b") setDocumentCategory(category);
+                          }}
+                          value={documentCategory}
+                        >
+                          <option value="bank">Bank statement</option>
+                          <option value="gstr1">GSTR-1</option>
+                          <option value="gstr3b">GSTR-3B</option>
+                        </select>
+                      </div>
+                      <label
+                        className={`document-drop${isDragging ? " dragging" : ""}`}
+                        htmlFor="documents"
+                        onDragEnter={(event) => { event.preventDefault(); setIsDragging(true); }}
+                        onDragLeave={(event) => { event.preventDefault(); setIsDragging(false); }}
+                        onDragOver={(event) => event.preventDefault()}
+                        onDrop={handleDrop}
+                      >
+                        <span style={{ color: "var(--primary)", fontSize: 24 }}>⇧</span>
+                        <strong style={{ fontSize: 12 }}>{isUploading ? "Scanning PDF securely…" : "Drop statement PDFs here or browse"}</strong>
+                        <span className="subtle">Add all 12 months for each statement type. Bank statements and GSTR-1 / GSTR-3B only · PDF files only</span>
+                        <input accept="application/pdf,.pdf" disabled={isWorking || selectedApplication?.status !== "pending_docs"} id="documents" multiple onChange={handleFileInput} style={{ display: "none" }} type="file" />
+                      </label>
+                      {rejectedFiles.length > 0 && <div className="notice error">Rejected: {rejectedFiles.join(", ")}. Upload PDF statements only.</div>}
+                      {fileNames.length > 0 && <div className="notice info">PDFs parsed in server memory for this demo: {fileNames.join(", ")}{ocrFileNames.length > 0 ? ` · Local OCR applied to: ${ocrFileNames.join(", ")}` : ""}</div>}
+                      {intakeCompleteness && (
+                        <div className="document-list">
+                          {(["bank", "gstr1", "gstr3b"] as DocumentCategory[]).map((category) => {
+                            const covered = intakeCompleteness.coverage[category];
+                            const missing = intakeCompleteness.missingMonths[category];
+                            return (
+                              <div className="document-row" key={category}>
+                                <span className="document-name">{category === "bank" ? "Bank" : category.toUpperCase()} · {covered.length}/12 months</span>
+                                <span className={`document-state${missing.length ? " missing" : ""}`}>{missing.length ? `${missing.length} period(s) missing` : "12 months verified"}</span>
+                              </div>
+                            );
+                          })}
+                          {Object.entries(intakeCompleteness.missingMonths).some(([, months]) => months.length > 0) && (
+                            <p className="subtle">Missing: {Object.entries(intakeCompleteness.missingMonths).filter(([, months]) => months.length > 0).map(([category, months]) => `${category.toUpperCase()} ${months.join(", ")}`).join(" · ")}</p>
+                          )}
+                        </div>
+                      )}
+                      {fileNames.length > 0 && <p className="subtle">Searchable text and page positions are kept in memory; PAN/Aadhaar-like identifiers are tokenized, and raw PDF bytes are not retained.</p>}
+                      <div className="signoff-actions">
+                        <button className="button" disabled={isWorking || !selectedApplication || selectedApplication.status !== "pending_docs"} onClick={() => void loadSamplePacket()} type="button">
+                          {isWorking ? <><span className="spinner" /> Loading sample packet…</> : "Use demo sample packet"}
+                        </button>
+                        <button className="button primary" disabled={!selectedApplication || selectedApplication.status !== "pending_docs" || isWorking} onClick={() => void runIntake()} type="button">
+                          {isWorking ? <><span className="spinner" /> Checking…</> : "Verify & hand off complete documents"}
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </section>
-              {renderCommunicationPanel("Customer communication · Document intake")}
+              {selectedApplication && renderCommunicationPanel("Customer communication · Document intake")}
             </div>
           )}
 
@@ -2714,77 +2887,6 @@ export default function KestrelDemo() {
               <span>Navigation: <kbd style={{ padding: "1px 5px", background: "rgba(255,255,255,0.1)", borderRadius: 3 }}>↑</kbd> <kbd style={{ padding: "1px 5px", background: "rgba(255,255,255,0.1)", borderRadius: 3 }}>↓</kbd> to select</span>
               <span><kbd style={{ padding: "1px 5px", background: "rgba(255,255,255,0.1)", borderRadius: 3 }}>ESC</kbd> to close</span>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* New Loan Application Modal */}
-      {isNewAppModalOpen && (
-        <div className="modal-backdrop" onClick={() => setIsNewAppModalOpen(false)}>
-          <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-            <form onSubmit={handleCreateApplication}>
-              <div className="modal-head">
-                <h2>New Commercial Loan Application</h2>
-                <button
-                  className="modal-close-btn"
-                  onClick={() => setIsNewAppModalOpen(false)}
-                  type="button"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="form-row">
-                  <label className="field-label" htmlFor="new-app-name">Applicant / Company Legal Name</label>
-                  <input
-                    autoFocus
-                    className="field"
-                    id="new-app-name"
-                    maxLength={120}
-                    onChange={(e) => setNewAppName(e.target.value)}
-                    placeholder="e.g. Apex Industrial Robotics Pvt Ltd"
-                    required
-                    value={newAppName}
-                  />
-                </div>
-                <div className="form-row">
-                  <label className="field-label" htmlFor="new-app-amount">Requested Loan Facility (INR)</label>
-                  <input
-                    className="field"
-                    id="new-app-amount"
-                    onChange={(e) => setNewAppAmount(e.target.value)}
-                    placeholder="e.g. 7500000"
-                    required
-                    type="number"
-                    value={newAppAmount}
-                  />
-                  {Number(newAppAmount) > 0 && (
-                    <p className="subtle" style={{ marginTop: 6, color: "var(--primary)", fontFamily: "'JetBrains Mono', monospace" }}>
-                      Facility Preview: {money(Number(newAppAmount))}
-                    </p>
-                  )}
-                </div>
-                <p className="subtle">
-                  Creating this application will initialize the 12-month document checklist and assign it to the Relationship Manager intake queue.
-                </p>
-              </div>
-              <div className="modal-foot">
-                <button
-                  className="button"
-                  onClick={() => setIsNewAppModalOpen(false)}
-                  type="button"
-                >
-                  Cancel
-                </button>
-                <button
-                  className="button primary"
-                  disabled={isCreatingApp || !newAppName.trim() || Number(newAppAmount) <= 0}
-                  type="submit"
-                >
-                  {isCreatingApp ? <><span className="spinner" /> Creating…</> : "Create Application →"}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
