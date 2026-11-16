@@ -276,6 +276,84 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border: 1px solid var(--border);
 }
 
+.active-role-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(14, 18, 29, 0.7);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.active-role-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  flex-shrink: 0;
+}
+
+.active-role-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.active-role-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.active-role-badge {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  letter-spacing: 0.04em;
+}
+
+.active-role-user {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  padding-left: 8px;
+}
+
+.synthetic-auth-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-bright);
+  line-height: 1.4;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-input-group .field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .role-segment-btn {
   display: flex;
   align-items: center;

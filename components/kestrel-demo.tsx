@@ -74,6 +74,51 @@ const communicationReasons: Record<Persona, CommunicationReasonOption[]> = {
   ],
 };
 
+function getDefaultUsername(role: Persona): string {
+  switch (role) {
+    case "rm":
+      return "rm.officer@kestrel.bank";
+    case "analyst":
+      return "analyst.patel@kestrel.bank";
+    case "credit-manager":
+      return "credit.manager@kestrel.bank";
+    case "owner":
+      return "governance.lead@kestrel.bank";
+    default:
+      return "operator@kestrel.bank";
+  }
+}
+
+function getPersonaLabel(role: Persona): string {
+  switch (role) {
+    case "rm":
+      return "Relationship Manager";
+    case "analyst":
+      return "Credit Analyst";
+    case "credit-manager":
+      return "Credit Manager";
+    case "owner":
+      return "Executive Governance";
+    default:
+      return "Operator";
+  }
+}
+
+function getPersonaShortLabel(role: Persona): string {
+  switch (role) {
+    case "rm":
+      return "RM Intake";
+    case "analyst":
+      return "Analyst Studio";
+    case "credit-manager":
+      return "Decision Dossier";
+    case "owner":
+      return "Governance Console";
+    default:
+      return "Workspace";
+  }
+}
+
 const defaultCommunicationReason: Record<Persona, CommunicationReason> = {
   rm: "missing-documents",
   analyst: "review-update",
@@ -221,6 +266,11 @@ function shortDate(value: string): string {
 export default function KestrelDemo() {
   const [view, setView] = useState<View>("tracker");
   const [persona, setPersona] = useState<Persona | null>(null);
+  const [loginModalPersona, setLoginModalPersona] = useState<Persona | null>(null);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [authenticatedUser, setAuthenticatedUser] = useState<string>("");
   const [sessionReady, setSessionReady] = useState(false);
   const [applications, setApplications] = useState<LoanApplication[]>([]);
   const [disbursementOfficer, setDisbursementOfficer] = useState("");
@@ -496,9 +546,12 @@ export default function KestrelDemo() {
         setSessionReady(true);
         if (!role) {
           setPersona(null);
+          setAuthenticatedUser("");
           window.history.replaceState({}, "", "/");
           return;
         }
+        const savedUser = typeof window !== "undefined" ? localStorage.getItem("kestrel_auth_user") : null;
+        setAuthenticatedUser(savedUser || getDefaultUsername(role));
         const view = selection?.persona === role && personaViews[role].includes(selection.view)
           ? selection.view
           : role === "owner" ? "owner" : "tracker";
@@ -776,11 +829,50 @@ export default function KestrelDemo() {
     }
   }
 
+  function handleInitiateLogin(role: Persona): void {
+    setLoginModalPersona(role);
+    setLoginUsername(getDefaultUsername(role));
+    setLoginPassword("demo@kestrel2026");
+    setLoginError(null);
+  }
+
+  async function handleCompleteLogin(e?: React.FormEvent): Promise<void> {
+    if (e) e.preventDefault();
+    if (!loginModalPersona) return;
+
+    if (!loginUsername.trim() || !loginPassword.trim()) {
+      setLoginError("Please enter both username and password (any synthetic credentials accepted).");
+      return;
+    }
+
+    const role = loginModalPersona;
+    const userToSave = loginUsername.trim();
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("kestrel_auth_user", userToSave);
+      } catch {
+        // ignore storage errors
+      }
+    }
+    setAuthenticatedUser(userToSave);
+    setLoginModalPersona(null);
+    setLoginError(null);
+    await signIn(role);
+  }
+
   async function signOut(): Promise<void> {
     setIsWorking(true);
     try {
       await api<{ ok: boolean }>("/api/session", { method: "DELETE" });
       setPersona(null);
+      setAuthenticatedUser("");
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.removeItem("kestrel_auth_user");
+        } catch {
+          // ignore
+        }
+      }
       setView("tracker");
       setOwnerSelectedId(null);
       setError(null);
@@ -1382,7 +1474,7 @@ export default function KestrelDemo() {
                   <button
                     className="portal-role-btn"
                     disabled={isWorking}
-                    onClick={() => void signIn("rm")}
+                    onClick={() => handleInitiateLogin("rm")}
                     type="button"
                   >
                     <span><strong>Relationship Manager</strong> · Intake</span>
@@ -1391,7 +1483,7 @@ export default function KestrelDemo() {
                   <button
                     className="portal-role-btn"
                     disabled={isWorking}
-                    onClick={() => void signIn("analyst")}
+                    onClick={() => handleInitiateLogin("analyst")}
                     type="button"
                   >
                     <span><strong>Credit Analyst</strong> · Spreading Studio</span>
@@ -1400,7 +1492,7 @@ export default function KestrelDemo() {
                   <button
                     className="portal-role-btn"
                     disabled={isWorking}
-                    onClick={() => void signIn("credit-manager")}
+                    onClick={() => handleInitiateLogin("credit-manager")}
                     type="button"
                   >
                     <span><strong>Credit Manager</strong> · Decision Dossier</span>
@@ -1434,7 +1526,7 @@ export default function KestrelDemo() {
                 <button
                   className="button primary"
                   disabled={isWorking}
-                  onClick={() => void signIn("owner")}
+                  onClick={() => handleInitiateLogin("owner")}
                   style={{ width: "100%", minHeight: 44, marginTop: 12, justifyContent: "space-between" }}
                   type="button"
                 >
@@ -1451,8 +1543,127 @@ export default function KestrelDemo() {
           </div>
 
           <p className="signin-footnote">
-            {isWorking ? "Initializing secure demo session…" : "Bank-grade protocol prototype · Single-click direct access · No password required"}
+            {isWorking ? "Initializing secure demo session…" : "Bank-grade protocol prototype · Enterprise directory authentication · Synthetic credentials supported"}
           </p>
+
+          {loginModalPersona && (
+            <div className="modal-backdrop" onClick={() => !isWorking && setLoginModalPersona(null)}>
+              <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 440 }}>
+                <div className="modal-head">
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 18, color: "var(--primary)" }}>
+                      {loginModalPersona === "owner" ? "◈" : loginModalPersona === "credit-manager" ? "⚖" : loginModalPersona === "analyst" ? "⌕" : "▦"}
+                    </span>
+                    <div>
+                      <h2 style={{ fontSize: 16, margin: 0 }}>
+                        Sign In · {getPersonaLabel(loginModalPersona)}
+                      </h2>
+                      <div style={{ color: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
+                        Enterprise Directory Authentication
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    className="modal-close-btn"
+                    disabled={isWorking}
+                    onClick={() => setLoginModalPersona(null)}
+                    type="button"
+                    aria-label="Close login dialog"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleCompleteLogin}>
+                  <div className="modal-body" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div className="synthetic-auth-banner">
+                      <span style={{ fontSize: 16, color: "var(--primary)" }}>ℹ</span>
+                      <div>
+                        <strong style={{ color: "var(--text-bright)", display: "block" }}>Demo Synthetic Authentication</strong>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>
+                          Enter any username and password to simulate enterprise sign-in. Any synthetic credentials are accepted.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="auth-input-group">
+                      <label className="field-label" htmlFor="login-username">
+                        Username / Corporate ID
+                      </label>
+                      <input
+                        id="login-username"
+                        className="field"
+                        type="text"
+                        autoFocus
+                        value={loginUsername}
+                        onChange={(e) => {
+                          setLoginUsername(e.target.value);
+                          setLoginError(null);
+                        }}
+                        placeholder="e.g. officer@kestrel.bank"
+                        autoComplete="username"
+                        required
+                      />
+                    </div>
+
+                    <div className="auth-input-group">
+                      <label className="field-label" htmlFor="login-password">
+                        Password
+                      </label>
+                      <input
+                        id="login-password"
+                        className="field"
+                        type="password"
+                        value={loginPassword}
+                        onChange={(e) => {
+                          setLoginPassword(e.target.value);
+                          setLoginError(null);
+                        }}
+                        placeholder="Enter any password"
+                        autoComplete="current-password"
+                        required
+                      />
+                    </div>
+
+                    {loginError && (
+                      <div className="notice error" style={{ margin: 0, fontSize: 12 }}>
+                        {loginError}
+                      </div>
+                    )}
+
+                    <div style={{ fontSize: 11, color: "var(--text-dim)", display: "flex", alignItems: "center", gap: 6 }}>
+                      <span>🔒 Bank-Grade 256-bit TLS Session · Isolated RBAC Scope</span>
+                    </div>
+                  </div>
+
+                  <div className="modal-foot">
+                    <button
+                      className="button"
+                      disabled={isWorking}
+                      onClick={() => setLoginModalPersona(null)}
+                      type="button"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="button primary"
+                      disabled={isWorking}
+                      type="submit"
+                    >
+                      {isWorking ? (
+                        <>
+                          <span className="spinner" />
+                          <span>Authenticating…</span>
+                        </>
+                      ) : (
+                        <span>Sign In to {getPersonaShortLabel(loginModalPersona)} →</span>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </section>
       </main>
     );
@@ -1472,43 +1683,18 @@ export default function KestrelDemo() {
             <div className="brand-subtitle">Autonomous Credit Mesh</div>
           </div>
         </div>
-        {/* Center: Live Role Segments with Work Queues */}
-        <div className="role-segments" role="tablist">
-          <button
-            className={`role-segment-btn ${persona === "rm" ? "active" : ""}`}
-            disabled={isWorking}
-            onClick={() => void switchUserRole("rm")}
-            type="button"
-          >
-            <span>RM</span>
-            {rmCount > 0 && <span className="role-badge">{rmCount}</span>}
-          </button>
-          <button
-            className={`role-segment-btn ${persona === "analyst" ? "active" : ""}`}
-            disabled={isWorking}
-            onClick={() => void switchUserRole("analyst")}
-            type="button"
-          >
-            <span>Analyst</span>
-            {analystCount > 0 && <span className="role-badge primary">{analystCount}</span>}
-          </button>
-          <button
-            className={`role-segment-btn ${persona === "credit-manager" ? "active" : ""}`}
-            disabled={isWorking}
-            onClick={() => void switchUserRole("credit-manager")}
-            type="button"
-          >
-            <span>Credit Mgr</span>
-            {creditManagerCount > 0 && <span className="role-badge amber">{creditManagerCount}</span>}
-          </button>
-          <button
-            className={`role-segment-btn ${persona === "owner" ? "active" : ""}`}
-            disabled={isWorking}
-            onClick={() => void (persona === "owner" ? null : signIn("owner"))}
-            type="button"
-          >
-            <span>Governance</span>
-          </button>
+        {/* Center: Live Role Indicator (Single-Role Isolated Workspace) */}
+        <div className="active-role-display">
+          <span className="active-role-dot" />
+          <div className="active-role-text">
+            <span className="active-role-title">
+              {persona ? getPersonaLabel(persona) : "Workspace"}
+            </span>
+            <span className="active-role-badge">Isolated Session</span>
+            {authenticatedUser && (
+              <span className="active-role-user">{authenticatedUser}</span>
+            )}
+          </div>
         </div>
 
         <div className="topbar-right">
@@ -1520,16 +1706,6 @@ export default function KestrelDemo() {
             <span>🔍</span>
             <span>Search or jump…</span>
             <kbd className="cmd-k-kbd">⌘K</kbd>
-          </button>
-
-          <button
-            className="button primary small"
-            disabled={isWorking}
-            onClick={() => setIsNewAppModalOpen(true)}
-            type="button"
-          >
-            <span>+</span>
-            <span>New App</span>
           </button>
 
           <div className="live">
@@ -1659,6 +1835,11 @@ export default function KestrelDemo() {
                   <div><h2>{taskQueueTitle}</h2><p>{taskQueueDescription}</p></div>
                   <div className="heading-actions">
                     <input aria-label="Search my tasks" className="field tracker-search" onChange={(event) => setTrackerQuery(event.target.value)} placeholder="Search ID or applicant" value={trackerQuery} />
+                    {persona === "rm" && (
+                      <button className="button primary small" disabled={isWorking} onClick={() => setIsNewAppModalOpen(true)} type="button">
+                        + New Application
+                      </button>
+                    )}
                     <button className="button small" onClick={() => openView("portfolio")} type="button">All applications →</button>
                     <button className="button small" disabled={isLoadingApplications} onClick={() => void loadApplications()} type="button">{isLoadingApplications ? <span className="spinner" /> : "↻"} Refresh</button>
                   </div>
@@ -2310,7 +2491,6 @@ export default function KestrelDemo() {
 
           {view === "owner" && (
             <>
-              {renderCommunicationPanel("Owner communication · Demo operations")}
               <section className="panel" style={{ marginBottom: 16 }}>
                 <div className="panel-head">
                   <div><h2>Portfolio health & application status</h2><p>Monitor stage distribution and owner handoffs. Select a file to open its details.</p></div>
@@ -2468,46 +2648,38 @@ export default function KestrelDemo() {
               </button>
             </div>
             <div className="command-palette-results">
-              <div className="command-palette-group-title">Workspaces &amp; Roles</div>
-              <div
-                className="command-palette-item"
-                onClick={() => {
-                  setIsCommandPaletteOpen(false);
-                  void switchUserRole("rm");
-                }}
-              >
-                <span>▦ Relationship Manager Workspace</span>
-                <span className="subtle">{rmCount} pending</span>
+              <div className="command-palette-group-title">
+                Active Session: {persona ? getPersonaLabel(persona) : "Workspace"}
               </div>
               <div
                 className="command-palette-item"
                 onClick={() => {
                   setIsCommandPaletteOpen(false);
-                  void switchUserRole("analyst");
+                  openView("tracker");
                 }}
               >
-                <span>⌕ Credit Analyst Spreading Studio</span>
-                <span className="subtle">{analystCount} ready</span>
+                <span>📋 Role Task Queue</span>
+                <span className="subtle">{taskQueue.length} pending items</span>
               </div>
               <div
                 className="command-palette-item"
                 onClick={() => {
                   setIsCommandPaletteOpen(false);
-                  void switchUserRole("credit-manager");
+                  openView("portfolio");
                 }}
               >
-                <span>⚖ Credit Manager Decision Dossier</span>
-                <span className="subtle">{creditManagerCount} awaiting</span>
+                <span>▦ All Applications Pipeline</span>
+                <span className="subtle">{applications.length} files</span>
               </div>
               <div
                 className="command-palette-item"
                 onClick={() => {
                   setIsCommandPaletteOpen(false);
-                  void signIn("owner");
+                  void signOut();
                 }}
               >
-                <span>◈ Executive Governance &amp; FinOps Console</span>
-                <span className="subtle">System telemetry</span>
+                <span>🚪 Sign out / Change Role</span>
+                <span className="subtle">Exit to role selection</span>
               </div>
 
               <div className="command-palette-group-title" style={{ marginTop: 10 }}>Applications</div>
